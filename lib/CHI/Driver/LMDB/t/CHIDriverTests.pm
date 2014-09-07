@@ -13,7 +13,8 @@ use CHI::Test;
 use Path::Tiny;
 use parent qw( CHI::t::Driver );
 
-sub testing_driver_class { 'CHI::Driver::LMDB' }
+sub testing_driver_class    { 'CHI::Driver::LMDB' }
+sub supports_get_namespaces { 0 }
 
 use LMDB_File qw( :all );
 

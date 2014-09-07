@@ -37,21 +37,11 @@ sub _build_existing_root_dir {
   return $dir;
 }
 
-has '_existing_namespace_dir' => ( is => 'ro', lazy => 1, builder => '_build_existing_namespace_dir' );
-
-sub _build_existing_namespace_dir {
-  my ($self) = @_;
-  my $path = path( $self->_existing_root_dir )->child( $self->namespace );
-  return $path if $path->is_dir;
-  $path->mkpath( { mode => $self->dir_create_mode } );
-  return $path;
-}
-
 has 'lmdb_env_params' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env_params' );
 
 sub _build_lmdb_env_params {
   my ($self) = @_;
-  return [ $self->_existing_namespace_dir, $self->lmdb_env_options ];
+  return [ $self->_existing_root_dir, { maxdbs => 1024, %{ $self->lmdb_env_options } } ];
 }
 
 has 'lmdb_env_options' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env_options' );
@@ -95,7 +85,7 @@ sub _mk_txn {
   my ($self) = @_;
   my $tx = $self->_lmdb_env->BeginTxn();
   $tx->AutoCommit(1);
-  my $db = $tx->OpenDB( { flags => MDB_CREATE } );
+  my $db = LMDB_File->open( $tx, $self->namespace, MDB_CREATE );
   return [ $tx, $db ];
 }
 
@@ -200,15 +190,7 @@ sub get_keys {
   return @keys;
 }
 
-sub get_namespaces {
-  my ($self) = @_;
-  my @out;
-  for my $child ( path( $self->_existing_root_dir )->children ) {
-    next unless $child->is_dir;
-    push @out, $child->basename;
-  }
-  return @out;
-}
+sub get_namespaces { croak 'not supported' }
 
 around max_key_length => sub {
   my ( $orig, $self, @args ) = @_;
