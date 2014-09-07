@@ -11,6 +11,7 @@ our $VERSION = '0.001000';
 
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
 
+use Carp qw( croak );
 use Moo qw( extends has );
 use Path::Tiny qw( path );
 use File::Spec::Functions qw( tmpdir );
@@ -75,9 +76,13 @@ sub _build_lmdb_env {
 
 sub _in_txn {
   my ( $self, $cb ) = @_;
+  if ( $self->{in_txn} ) {
+    return $cb->( @{ $self->{in_txn} } );
+  }
   my $tx = $self->_lmdb_env->BeginTxn();
   $tx->AutoCommit(1);
   my $db = $tx->OpenDB( { flags => MDB_CREATE } );
+  local $self->{in_txn} = [ $tx, $db ];
   my $rval = $cb->( $tx, $db );
   $tx->commit;
   return $rval;
@@ -123,6 +128,33 @@ sub clear {
       my ( $tx, $db ) = @_;
       for my $key ( $self->get_keys ) {
         $db->del( $key, undef );
+      }
+    }
+  );
+}
+
+sub fetch_multi_hashref {
+  my ( $self, $keys ) = @_;
+  my $out = {};
+  $self->_in_txn(
+    sub {
+      my ( $tx, $db ) = @_;
+      for my $key ( @{$keys} ) {
+        $out->{$key} = $db->get($key);
+      }
+    }
+  );
+  return $out;
+}
+
+sub store_multi {
+  my ( $self, $key_data, $options ) = @_;
+  croak "must specify key_values" unless defined($key_data);
+  $self->_in_txn(
+    sub {
+      my ( $tx, $db ) = @_;
+      for my $key ( keys %{$key_data} ) {
+        $self->set( $key, $key_data->{$key} );
       }
     }
   );
