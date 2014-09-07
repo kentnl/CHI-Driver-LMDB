@@ -25,7 +25,7 @@ if ( $ENV{CHI_KEEP_TEMP_DIR} ) {
 }
 my $extra_options = {};
 if ( $ENV{CHI_LMDB_FAST} ) {
-  $extra_options->{flags} = MDB_NOSYNC | MDB_NOMETASYNC | MDB_WRITEMAP;
+  $extra_options->{flags} = MDB_NOSYNC | MDB_NOMETASYNC ;
 }
 
 sub new_cache_options {
