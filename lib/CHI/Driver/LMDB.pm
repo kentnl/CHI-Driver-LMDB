@@ -144,6 +144,13 @@ around max_key_length => sub {
   return $rval > $real_max ? $real_max : $rval;
 };
 
+sub DEMOLISH {
+  my ( $self ) = @_;
+  $self->_clear_lmdb_db;
+  $self->_lmdb_txn->commit;
+  $self->_clear_lmdb_txn;
+}
+
 no Moo;
 
 1;
