@@ -69,9 +69,34 @@ sub _build_lmdb_env_options {
 
 has '_lmdb_env' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env' );
 
+has 'single_txn' => ( is => 'ro', lazy => 1, default => sub { undef } );
+
 sub _build_lmdb_env {
   my ($self) = @_;
   return LMDB::Env->new( @{ $self->lmdb_env_params } );
+}
+
+sub BUILD {
+  my ($self) = @_;
+  if ( $self->single_txn ) {
+    $self->{in_txn} = $self->_mk_txn;
+  }
+}
+
+sub DEMOLISH {
+  my ($self) = @_;
+  if ( $self->{in_txn} ) {
+    $self->{in_txn}->[0]->commit;
+    delete $self->{in_txn};
+  }
+}
+
+sub _mk_txn {
+  my ($self) = @_;
+  my $tx = $self->_lmdb_env->BeginTxn();
+  $tx->AutoCommit(1);
+  my $db = $tx->OpenDB( { flags => MDB_CREATE } );
+  return [ $tx, $db ];
 }
 
 sub _in_txn {
@@ -79,12 +104,9 @@ sub _in_txn {
   if ( $self->{in_txn} ) {
     return $cb->( @{ $self->{in_txn} } );
   }
-  my $tx = $self->_lmdb_env->BeginTxn();
-  $tx->AutoCommit(1);
-  my $db = $tx->OpenDB( { flags => MDB_CREATE } );
-  local $self->{in_txn} = [ $tx, $db ];
-  my $rval = $cb->( $tx, $db );
-  $tx->commit;
+  local $self->{in_txn} = $self->_mk_txn;
+  my $rval = $cb->( @{ $self->{in_txn} } );
+  $self->{in_txn}->[0]->commit;
   return $rval;
 }
 
