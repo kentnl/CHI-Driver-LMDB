@@ -53,9 +53,15 @@ sub _build_lmdb_env_params {
 
 has 'lmdb_env_options' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env_options' );
 
+my %Sizes = ( k => 1024, m => 1024 * 1024 );
+
 sub _build_lmdb_env_options {
   my ($self) = @_;
-  return {};
+  my $cache_size = $self->cache_size;
+
+  $cache_size *= $Sizes{ lc($1) } if $cache_size =~ s/([km])$//i;
+
+  return { mapsize => $cache_size };
 }
 
 has '_lmdb_env' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env' );
