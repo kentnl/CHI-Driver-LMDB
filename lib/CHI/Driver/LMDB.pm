@@ -83,7 +83,7 @@ sub BUILD {
   }
 }
 
-sub DEMOLISH {
+sub DESTROY {
   my ($self) = @_;
   if ( $self->{in_txn} ) {
     $self->{in_txn}->[0]->commit;
