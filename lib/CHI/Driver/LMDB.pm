@@ -65,65 +65,76 @@ sub _build_lmdb_env {
   return LMDB::Env->new( @{ $self->lmdb_env_params } );
 }
 
-has '_lmdb_txn' => (
-  is      => 'ro',
-  lazy    => 1,
-  builder => '_build_lmdb_txn',
-  clearer => '_clear_lmdb_txn',
-);
-
-sub _build_lmdb_txn {
-  my ($self) = @_;
+sub _in_txn {
+  my ( $self, $cb ) = @_;
   my $tx = $self->_lmdb_env->BeginTxn();
   $tx->AutoCommit(1);
-  return $tx;
-}
-
-has '_lmdb_db' => (
-  is      => 'ro',
-  lazy    => 1,
-  builder => '_build_lmdb_db',
-  clearer => '_clear_lmdb_db',
-);
-
-sub _build_lmdb_db {
-  my ($self) = @_;
-  $self->_lmdb_txn->OpenDB( { flags => MDB_CREATE, } );
+  my $db = $tx->OpenDB( { flags => MDB_CREATE } );
+  my $rval = $cb->( $tx, $db );
+  $tx->commit;
+  return $rval;
 }
 
 sub store {
   my ( $self, $key, $data ) = @_;
-  $self->_lmdb_db->put( $key, $data );
+  $self->_in_txn(
+    sub {
+      my ( $tx, $db ) = @_;
+      $db->put( $key, $data );
+    }
+  );
 }
 
 sub fetch {
   my ( $self, $key ) = @_;
-  $self->_lmdb_db->get($key);
+  my $rval;
+  $self->_in_txn(
+    sub {
+      my ( $tx, $db ) = @_;
+      $rval = $db->get($key);
+    }
+  );
+  return $rval;
 }
 
 sub remove {
   my ( $self, $key ) = @_;
-  $self->_lmdb_db->del( $key, undef );
+  $self->_in_txn(
+    sub {
+      my ( $tx, $db ) = @_;
+      $db->del( $key, undef );
+    }
+  );
 }
 
 sub clear {
   my ($self) = @_;
-  my $db = $self->_lmdb_db;
-  for my $key ( $self->get_keys ) {
-    $db->del( $key, undef );
-  }
+
+  $self->_in_txn(
+    sub {
+      my ( $tx, $db ) = @_;
+      for my $key ( $self->get_keys ) {
+        $db->del( $key, undef );
+      }
+    }
+  );
 }
 
 sub get_keys {
   my ($self) = @_;
-  my $db     = $self->_lmdb_db;
-  my $cursor = $db->Cursor;
   my @keys;
-  my ( $key, $value );
-  while (1) {
-    last unless eval { $cursor->get( $key, $value, MDB_NEXT ); 1 };
-    push @keys, $key;
-  }
+
+  $self->_in_txn(
+    sub {
+      my ( $tx, $db ) = @_;
+      my $cursor = $db->Cursor;
+      my ( $key, $value );
+      while (1) {
+        last unless eval { $cursor->get( $key, $value, MDB_NEXT ); 1 };
+        push @keys, $key;
+      }
+    }
+  );
   return @keys;
 }
 
