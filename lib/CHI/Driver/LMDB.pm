@@ -22,6 +22,8 @@ has 'dir_create_mode' => ( is => 'ro', default => sub { oct(775) } );
 
 has 'root_dir' => ( is => 'ro', lazy => 1, builder => '_build_root_dir' );
 
+has 'cache_size' => ( is => 'ro', lazy => 1, default => '5m' );
+
 sub _build_root_dir { return path( tmpdir() )->child('chi-driver-lmdb') }
 
 has '_existing_root_dir' => ( is => 'ro', lazy => 1, builder => '_build_existing_root_dir' );

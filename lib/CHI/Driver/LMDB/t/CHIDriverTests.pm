@@ -23,10 +23,10 @@ if ( $ENV{CHI_KEEP_TEMP_DIR} ) {
   $tempdir->[Path::Tiny::TEMP]->unlink_on_destroy(0);
   warn "Tempdir kept at $tempdir";
 }
-my $extra_options = {};
-if ( $ENV{CHI_LMDB_FAST} ) {
-  $extra_options->{flags} = MDB_NOSYNC | MDB_NOMETASYNC;
-}
+my $extra_options = {
+  mapsize => 15 * 1024 * 1024,
+  flags   => MDB_NOSYNC | MDB_NOMETASYNC,
+};
 
 sub new_cache_options {
   my $self = shift;
