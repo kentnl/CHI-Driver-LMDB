@@ -177,16 +177,17 @@ sub fetch_multi_hashref {
 }
 
 sub store_multi {
-    my ( $self, $key_data, $options ) = @_;
+    my ( $self, $key_data, $set_options ) = @_;
     croak "must specify key_values" unless defined($key_data);
     $self->_in_txn(
         sub {
             my ( $tx, $db ) = @_;
             for my $key ( keys %{$key_data} ) {
-                $self->set( $key, $key_data->{$key} );
+                $self->set( $key, $key_data->{$key}, $set_options );
             }
         }
     );
+    return;
 }
 
 sub get_keys {
