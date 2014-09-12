@@ -7,7 +7,7 @@ package CHI::Driver::LMDB;
 
 our $VERSION = '0.001000';
 
-# ABSTRACT: use OpenLDAPS LMDB Key-Value store as a cache backend.
+# ABSTRACT: use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
 
@@ -229,7 +229,7 @@ __END__
 
 =head1 NAME
 
-CHI::Driver::LMDB - use OpenLDAPS LMDB Key-Value store as a cache backend.
+CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 =head1 VERSION
 

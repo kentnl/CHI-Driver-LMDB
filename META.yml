@@ -1,5 +1,5 @@
 ---
-abstract: 'use OpenLDAPS LMDB Key-Value store as a cache backend.'
+abstract: 'use OpenLDAPs LMDB Key-Value store as a cache backend.'
 author:
   - 'Kent Fredric <kentnl@cpan.org>'
 build_requires:

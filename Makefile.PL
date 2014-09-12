@@ -10,7 +10,7 @@ use ExtUtils::MakeMaker ;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "use OpenLDAPS LMDB Key-Value store as a cache backend.",
+  "ABSTRACT" => "use OpenLDAPs LMDB Key-Value store as a cache backend.",
   "AUTHOR" => "Kent Fredric <kentnl\@cpan.org>",
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0
