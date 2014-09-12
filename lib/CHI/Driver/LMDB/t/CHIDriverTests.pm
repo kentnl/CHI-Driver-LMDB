@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB::t::CHIDriverTests;
 
-our $VERSION = '0.001000';
+our $VERSION = '0.001001';
 
 # ABSTRACT: Test suite for LMDB driver
 
