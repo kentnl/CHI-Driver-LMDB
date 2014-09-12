@@ -69,7 +69,6 @@ do { my $x = {
                       'requires' => {
                                       'CHI::Driver' => '0',
                                       'CHI::Test' => '0',
-                                      'CHI::t::Driver' => '0',
                                       'Carp' => '0',
                                       'File::Spec::Functions' => '0',
                                       'LMDB_File' => '0',
