@@ -153,11 +153,11 @@ sub clear {
 # TODO: Implement in mdb_drop https://rt.cpan.org/Public/Bug/Display.html?id=98682
     $self->_in_txn(
         sub {
-            my ( $tx, $db ) = @_;
+            my ( undef, $db ) = @_;
             for my $key ( $self->get_keys ) {
                 $db->del( $key, undef );
             }
-        }
+        },
     );
     return;
 }
@@ -167,11 +167,11 @@ sub fetch_multi_hashref {
     my $out = {};
     $self->_in_txn(
         sub {
-            my ( $tx, $db ) = @_;
+            my ( undef, $db ) = @_;
             for my $key ( @{$keys} ) {
                 $out->{$key} = $db->get($key);
             }
-        }
+        },
     );
     return $out;
 }
