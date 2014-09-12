@@ -15,7 +15,7 @@ use Carp qw( croak );
 use Moo qw( extends has );
 use Path::Tiny qw( path );
 use File::Spec::Functions qw( tmpdir );
-use LMDB_File qw( :dbflags :cursor_op );
+use LMDB_File qw( MDB_CREATE MDB_NEXT );
 extends 'CHI::Driver';
 
 has 'dir_create_mode' => ( is => 'ro', lazy => 1, default => oct(775) );
