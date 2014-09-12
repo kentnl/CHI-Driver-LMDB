@@ -40,6 +40,18 @@ for my $attr ( keys %env_opts ) {
   has $attr => %{ $env_opts{$attr} };
 }
 
+my $sizes = {
+  k => 1024,
+  m => 1024 * 1024,
+};
+sub _build_mapsize {
+  my ( $self ) = @_;
+  my $cache_size = $self->cache_size;
+  if ( $cache_size =~ s/([km])\z//msxi ) {
+    $cache_size *= $sizes->{ lc $1 };
+  }
+  return $cache_size;
+}
 sub _build_root_dir {
   return path( tmpdir() )->child( 'chi-driver-lmdb-' . $> );
 }
