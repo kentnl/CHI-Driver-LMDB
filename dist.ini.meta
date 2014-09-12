@@ -19,7 +19,17 @@ srcreadme         = mkdn
 twitter_hash_tags = #perl #cpan
 ; auto_prereqs_skip = File::Find
 
-[Prereqs]
+; https://rt.cpan.org/Ticket/Display.html?id=98830
+[Prereqs / CHI::Test]
+-phase = test
+-type  = requires
+Date::Parse   = 0
+Test::Builder = 0
+Test::Class   = 0
+Test::Deep    = 0
+Test::Exception = 0
+Test::More      = 0
+Test::Warn      = 0
 
 [RemovePrereqs]
 remove = CHI::t::Driver
