@@ -123,13 +123,13 @@
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/kentfredric/CHI-Driver-LMDB/issues"
+         "web" : "https://github.com/kentnl/CHI-Driver-LMDB/issues"
       },
-      "homepage" : "https://github.com/kentfredric/CHI-Driver-LMDB",
+      "homepage" : "https://github.com/kentnl/CHI-Driver-LMDB",
       "repository" : {
          "type" : "git",
-         "url" : "https://github.com/kentfredric/CHI-Driver-LMDB.git",
-         "web" : "https://github.com/kentfredric/CHI-Driver-LMDB"
+         "url" : "https://github.com/kentnl/CHI-Driver-LMDB.git",
+         "web" : "https://github.com/kentnl/CHI-Driver-LMDB"
       }
    },
    "version" : "0.001000",

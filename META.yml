@@ -37,9 +37,9 @@ requires:
   utf8: '0'
   warnings: '0'
 resources:
-  bugtracker: https://github.com/kentfredric/CHI-Driver-LMDB/issues
-  homepage: https://github.com/kentfredric/CHI-Driver-LMDB
-  repository: https://github.com/kentfredric/CHI-Driver-LMDB.git
+  bugtracker: https://github.com/kentnl/CHI-Driver-LMDB/issues
+  homepage: https://github.com/kentnl/CHI-Driver-LMDB
+  repository: https://github.com/kentnl/CHI-Driver-LMDB.git
 version: '0.001000'
 x_BuiltWith:
   modules:
