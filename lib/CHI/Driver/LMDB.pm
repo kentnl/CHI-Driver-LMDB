@@ -260,7 +260,7 @@ See L<C<CHI> documentation|CHI> for more details on usage.
 
 =head1 ATTRIBUTES
 
-=head2 dir_create_mode
+=head2 C<dir_create_mode>
 
 What mode (if any) to use when creating C<root_dir> if it does not exist.
 
@@ -269,7 +269,7 @@ What mode (if any) to use when creating C<root_dir> if it does not exist.
     dir_create_mode => oct 666,
   );
 
-=head2 root_dir
+=head2 C<root_dir>
 
 The prefix directory the C<LMDB> data store will be installed to.
 
@@ -281,7 +281,7 @@ Default is:
 
   OSTEMPDIR/chi-driver-lmdb-$EUID
 
-=head2 cache_size
+=head2 C<cache_size>
 
 The size in bytes for each database.
 
@@ -291,11 +291,12 @@ This is a convenience wrapper for L</mapsize> which supports suffixes:
   cache_size => 5k # 5 Kilobytes
   cache_size => 5m # 5 Megabytes ( default )
 
-This is also desiged for syntax compatibility with L<< C<CHI::Driver::FastMmap>|CHI::Driver::FastMmap >>
+This is also designed for syntax compatibility with L<< C<CHI::Driver::FastMmap>|CHI::Driver::FastMmap >>
 
-=head2 single_txn
+=head2 C<single_txn>
 
   single_txn => 1
+
 B<SPEED>: For performance benefits, have a single transaction
 that lives from the creation of the CHI cache till its destruction.
 
@@ -308,7 +309,7 @@ You can avoid this by manually destroying the cache with:
 
 Prior to global destruction.
 
-=head2 db_flags
+=head2 C<db_flags>
 
 Flags to pass to C<OpenDB>/C<< LMDB_File->open >>.
 
@@ -318,7 +319,7 @@ See L<< C<LMDB_File>'s constructor options|LMDB_File/LMDB_File >> for details.
 
   db_flags => MDB_CREATE # default
 
-=head2 tx_flags
+=head2 C<tx_flags>
 
 Flags to pass to C<< LMDB::Env->new >>
 
@@ -328,25 +329,25 @@ Default is C<0>
 
   tx_flags => 0 # no flags
 
-=head2 put_flags
+=head2 C<put_flags>
 
 Flags to pass to C<< ->put(k,v,WRITE_FLAGS) >>.
 
 See L<< LMDB_File->put options|LMDB_File/LMDB_File >> for details.
 
-=head2 mapsize
+=head2 C<mapsize>
 
 Passes through to C<< LMDB::Env->new( mapsize => ... ) >>
 
 Default value is taken from L</cache_size> with some C<m/k> math if its set.
 
-=head2 maxreaders
+=head2 C<maxreaders>
 
-B<TODO:> Currently not defined due to https://rt.cpan.org/Public/Bug/Display.html?id=98821
+B<TODO:> Currently not defined due to L<< rt#98821|https://rt.cpan.org/Public/Bug/Display.html?id=98821 >>
 
 Passes through to C<< LMDB::Env->new( maxreaders => ... ) >>
 
-=head2 maxdbs
+=head2 C<maxdbs>
 
 Passes through to C<< LMDB::Env->new( maxdbs => ... ) >>
 
@@ -354,7 +355,7 @@ Defines how many CHI namespaces ( Databases ) a path can contain.
 
 Default is 1024.
 
-=head2 mode
+=head2 C<mode>
 
 Passes through to C<< LMDB::Env->new( mode => ... ) >>
 
@@ -362,7 +363,7 @@ Defines the permissions on created DB Objects.
 
 Defaults to C<oct 600> == C<-rw------->
 
-=head2 flags
+=head2 C<flags>
 
 Passes through to C<< LMDB::Env->new( flags => ... ) >>
 
@@ -379,7 +380,7 @@ for the life of its existance. However, pay attention to the warnings about clea
 up properly in L</single_txn>.
 
 Also, this mode is less ideal if you want to have two processes sharing a cache,
-because the data won't be visible on the other one till it exits! :)
+because the data won't be visible on the other one till it exits! ☺
 
 =head2 NOSYNC Mode.
 
@@ -396,14 +397,17 @@ compromise for a mere cache backend, where a missing record is a performance hit
     flags => MDB_NOSYNC | MDB_NOMETASYNC
   );
 
-This for me cuts down an operation that takes 30 seconds worth of writes down to 6 =).
+This for me cuts down an operation that takes 30 seconds worth of writes down to 6 ☺.
 
 =head1 Comparison vs FastMmap
 
 FastMmap is still faster for reads. Here is a simple comparison for runs 
 of my C<dep_changes.pl> utility which does a respectable amount of cache lookups.
 
-L<< Google Docs Image|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=interactive >>
+L<<
+Google Docs Image
+|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=interactive
+>>
 
 =for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=image"></a></center>
 
@@ -419,7 +423,10 @@ For writes, whether or not FastMmap is faster depends on settings.
 
 =back
 
-L<< Google Docs Image|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=interactive >>
+L<<
+Google Docs Image
+|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=interactive
+>>
 
 =for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=image"></a></center>
 
@@ -431,7 +438,10 @@ However,
 
 =back
 
-L<< Google Docs Image|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive >>
+L<<
+Google Docs Image
+|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive
+>>
 
 =for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=image"></a></center>
 

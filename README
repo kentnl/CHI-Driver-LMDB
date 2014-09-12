@@ -17,7 +17,7 @@ SYNOPSIS
     See "CHI" documentation for more details on usage.
 
 ATTRIBUTES
-  dir_create_mode
+  "dir_create_mode"
     What mode (if any) to use when creating "root_dir" if it does not exist.
 
       ->new(
@@ -25,7 +25,7 @@ ATTRIBUTES
         dir_create_mode => oct 666,
       );
 
-  root_dir
+  "root_dir"
     The prefix directory the "LMDB" data store will be installed to.
 
       ->new(
@@ -36,7 +36,7 @@ ATTRIBUTES
 
       OSTEMPDIR/chi-driver-lmdb-$EUID
 
-  cache_size
+  "cache_size"
     The size in bytes for each database.
 
     This is a convenience wrapper for "mapsize" which supports suffixes:
@@ -45,13 +45,14 @@ ATTRIBUTES
       cache_size => 5k # 5 Kilobytes
       cache_size => 5m # 5 Megabytes ( default )
 
-    This is also desiged for syntax compatibility with
+    This is also designed for syntax compatibility with
     "CHI::Driver::FastMmap"
 
-  single_txn
+  "single_txn"
       single_txn => 1
-    B<SPEED>: For performance benefits, have a single transaction
-    that lives from the creation of the CHI cache till its destruction.
+
+    SPEED: For performance benefits, have a single transaction that lives
+    from the creation of the CHI cache till its destruction.
 
     However, WARNING: this flag is currently a bit dodgy, and CHI caches
     being kept alive till global destruction WILL trigger a "SEGV", and
@@ -63,7 +64,7 @@ ATTRIBUTES
 
     Prior to global destruction.
 
-  db_flags
+  "db_flags"
     Flags to pass to "OpenDB"/"LMDB_File->open".
 
     See "LMDB_File"'s constructor options for details.
@@ -72,7 +73,7 @@ ATTRIBUTES
 
       db_flags => MDB_CREATE # default
 
-  tx_flags
+  "tx_flags"
     Flags to pass to "LMDB::Env->new"
 
     See "LMDB::Env"'s constructor options for details.
@@ -81,38 +82,38 @@ ATTRIBUTES
 
       tx_flags => 0 # no flags
 
-  put_flags
+  "put_flags"
     Flags to pass to "->put(k,v,WRITE_FLAGS)".
 
     See LMDB_File->put options for details.
 
-  mapsize
+  "mapsize"
     Passes through to "LMDB::Env->new( mapsize => ... )"
 
     Default value is taken from "cache_size" with some "m/k" math if its
     set.
 
-  maxreaders
-    TODO: Currently not defined due to
-    https://rt.cpan.org/Public/Bug/Display.html?id=98821
+  "maxreaders"
+    TODO: Currently not defined due to rt#98821
+    <https://rt.cpan.org/Public/Bug/Display.html?id=98821>
 
     Passes through to "LMDB::Env->new( maxreaders => ... )"
 
-  maxdbs
+  "maxdbs"
     Passes through to "LMDB::Env->new( maxdbs => ... )"
 
     Defines how many CHI namespaces ( Databases ) a path can contain.
 
     Default is 1024.
 
-  mode
+  "mode"
     Passes through to "LMDB::Env->new( mode => ... )"
 
     Defines the permissions on created DB Objects.
 
     Defaults to "oct 600" == "-rw-------"
 
-  flags
+  "flags"
     Passes through to "LMDB::Env->new( flags => ... )"
 
 PERFORMANCE
@@ -128,7 +129,7 @@ PERFORMANCE
 
     Also, this mode is less ideal if you want to have two processes sharing
     a cache, because the data won't be visible on the other one till it
-    exits! :)
+    exits! ☺
 
   NOSYNC Mode.
     You can also tell LMDB NOT to call "sync" at the end of every
@@ -147,7 +148,7 @@ PERFORMANCE
       );
 
     This for me cuts down an operation that takes 30 seconds worth of writes
-    down to 6 =).
+    down to 6 ☺.
 
 Comparison vs FastMmap
     FastMmap is still faster for reads. Here is a simple comparison for runs
