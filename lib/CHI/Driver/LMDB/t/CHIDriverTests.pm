@@ -38,7 +38,7 @@ sub new_cache_options {
   return (
     root_dir => $tempdir,
     %{$extra_options},
-    $self->SUPER::new_cache_options()
+    $self->SUPER::new_cache_options(),
   );
 }
 
