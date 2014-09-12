@@ -7,7 +7,7 @@ VERSION
 
 SYNOPSIS
       use CHI;
-  
+
       my $cache = CHI->new(
         driver => 'LMDB',
         root_dir => 'some/path',

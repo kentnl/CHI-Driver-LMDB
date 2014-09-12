@@ -249,7 +249,7 @@ version 0.001000
 =head1 SYNOPSIS
 
   use CHI;
-  
+
   my $cache = CHI->new(
     driver => 'LMDB',
     root_dir => 'some/path',
@@ -369,14 +369,14 @@ Passes through to C<< LMDB::Env->new( flags => ... ) >>
 
 =head1 PERFORMANCE
 
-If write performance is a little slow for you ( due to the defaults being a single 
-transaction per SET/GET operation, and transactions being flushed to disk when written ), 
+If write performance is a little slow for you ( due to the defaults being a single
+transaction per SET/GET operation, and transactions being flushed to disk when written ),
 there are two ways you can make performance a little speedy.
 
 =head2 Single Transaction Mode.
 
 If you pass C<< single_txn => 1 >> the cache will be given a single transaction
-for the life of its existence. However, pay attention to the warnings about cleaning 
+for the life of its existence. However, pay attention to the warnings about cleaning
 up properly in L</single_txn>.
 
 Also, this mode is less ideal if you want to have two processes sharing a cache,
@@ -401,7 +401,7 @@ This for me cuts down an operation that takes 30 seconds worth of writes down to
 
 =head1 Comparison vs FastMmap
 
-FastMmap is still faster for reads. Here is a simple comparison for runs 
+FastMmap is still faster for reads. Here is a simple comparison for runs
 of my C<dep_changes.pl> utility which does a respectable amount of cache look-ups.
 
 L<<
@@ -413,7 +413,7 @@ Google Docs Image
 
 For writes, whether or not FastMmap is faster depends on settings.
 
-=over 4 
+=over 4
 
 =item * C<NOSYNC> + C<single_txn = 1> tends to give faster performance than C<FastMmap>.
 
