@@ -18,7 +18,7 @@ use File::Spec::Functions qw( tmpdir );
 use LMDB_File qw( MDB_CREATE MDB_NEXT );
 extends 'CHI::Driver';
 
-has 'dir_create_mode' => ( is => 'ro', lazy => 1, default => oct(775) );
+has 'dir_create_mode' => ( is => 'ro', lazy => 1, default => oct 775 );
 has 'root_dir'        => ( is => 'ro', lazy => 1, builder => '_build_root_dir' );
 has 'cache_size'      => ( is => 'ro', lazy => 1, default => '5m' );
 has 'single_txn'      => ( is => 'ro', lazy => 1, default => sub { undef } );
@@ -32,7 +32,7 @@ my %env_opts = (
   # TODO: Uncomment this line when https://rt.cpan.org/Public/Bug/Display.html?id=98821 is solved.
   #   maxreaders => { is => 'ro', lazy => 1, default => 126 },
   maxdbs => { is => 'ro', lazy => 1, default => 1024 },
-  mode   => { is => 'ro', lazy => 1, default => oct(600) },
+  mode   => { is => 'ro', lazy => 1, default => oct 600 },
   flags  => { is => 'ro', lazy => 1, default => 0 },
 );
 
@@ -59,7 +59,7 @@ has '_lmdb_max_key' => ( is => 'ro', builder => '_build_lmdb_max_key', lazy => 1
 
 sub _build_lmdb_env {
   my ($self) = @_;
-  return LMDB::Env->new( $self->_existing_root_dir . q[], { map { $_ => $self->$_() } keys %{$env_opts} } );
+  return LMDB::Env->new( $self->_existing_root_dir . q[], { map { $_ => $self->$_() } keys %env_opts } );
 }
 
 sub _build_lmdb_max_key {
@@ -100,6 +100,7 @@ sub _in_txn {
   if ( $self->{in_txn} ) {
     return $cb->( @{ $self->{in_txn} } );
   }
+  ## no critic (Variables::ProhibitLocalVars)
   local $self->{in_txn} = $self->_mk_txn;
   my $rval = $cb->( @{ $self->{in_txn} } );
   $self->{in_txn}->[0]->commit;
@@ -114,6 +115,7 @@ sub store {
       $db->put( $key, $data, $self->put_flags );
     }
   );
+  return $self;
 }
 
 sub fetch {
