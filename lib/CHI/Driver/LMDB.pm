@@ -445,6 +445,8 @@ Google Docs Image
 
 =for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=image"></a></center>
 
+=for Pod::Coverage BUILD DEMOLISH clear fetch fetch_multi_hashref get_keys get_namespaces max_key_length remove store store_multi
+
 =head1 AUTHOR
 
 Kent Fredric <kentnl@cpan.org>

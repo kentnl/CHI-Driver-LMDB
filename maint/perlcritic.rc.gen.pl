@@ -27,6 +27,7 @@ for my $wordlist (@stopwords) {
 #  'Subroutines::ProhibitCallsToUndeclaredSubs' => ( 'exempt_subs' => 'String::Formatter::str_rf' ), );
 
 $bundle->remove_policy('ErrorHandling::RequireUseOfExceptions');
+
 # Due to long URIs in for sections
 $bundle->remove_policy('Tics::ProhibitLongLines');
 

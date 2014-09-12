@@ -58,6 +58,8 @@ CHI::Driver::LMDB::t::CHIDriverTests - Test suite for LMDB driver
 
 version 0.001000
 
+=for Pod::Coverage new_cache_options supports_get_namespaces testing_driver_class
+
 =head1 AUTHOR
 
 Kent Fredric <kentnl@cpan.org>
