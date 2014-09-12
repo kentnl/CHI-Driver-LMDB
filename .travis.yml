@@ -1,4 +1,7 @@
 language: perl
+env:
+  - VERBOSE_TESTING=1
+  - CONFESS=1
 matrix:
   allow_failures:
     - perl: "5.8"
