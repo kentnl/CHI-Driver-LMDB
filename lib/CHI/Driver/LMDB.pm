@@ -44,14 +44,16 @@ my $sizes = {
   k => 1024,
   m => 1024 * 1024,
 };
+
 sub _build_mapsize {
-  my ( $self ) = @_;
+  my ($self) = @_;
   my $cache_size = $self->cache_size;
   if ( $cache_size =~ s/([km])\z//msxi ) {
     $cache_size *= $sizes->{ lc $1 };
   }
   return $cache_size;
 }
+
 sub _build_root_dir {
   return path( tmpdir() )->child( 'chi-driver-lmdb-' . $> );
 }
@@ -243,6 +245,195 @@ CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 =head1 VERSION
 
 version 0.001000
+
+=head1 SYNOPSIS
+
+  use CHI;
+  
+  my $cache = CHI->new(
+    driver => 'LMDB',
+    root_dir => 'some/path',
+    namespace => "My::Project",
+  );
+
+See L<C<CHI> documentation|CHI> for more details on usage.
+
+=head1 ATTRIBUTES
+
+=head2 dir_create_mode
+
+What mode (if any) to use when creating C<root_dir> if it does not exist.
+
+  ->new(
+    # Default is 775 = rwxr-xr-x
+    dir_create_mode => oct 666,
+  );
+
+=head2 root_dir
+
+The prefix directory the C<LMDB> data store will be installed to.
+
+  ->new(
+    root_dir => 'some/path'
+  )
+
+Default is:
+
+  OSTEMPDIR/chi-driver-lmdb-$EUID
+
+=head2 cache_size
+
+The size in bytes for each database.
+
+This is a convenience wrapper for L</mapsize> which supports suffixes:
+
+  cache_size => 5  # 5 bytes
+  cache_size => 5k # 5 Kilobytes
+  cache_size => 5m # 5 Megabytes ( default )
+
+This is also desiged for syntax compatibility with L<< C<CHI::Driver::FastMmap>|CHI::Driver::FastMmap >>
+
+=head2 single_txn
+
+  single_txn => 1
+B<SPEED>: For performance benefits, have a single transaction
+that lives from the creation of the CHI cache till its destruction.
+
+However, B<WARNING:> this flag is currently a bit dodgy, and CHI caches being kept alive
+till global destruction B<WILL> trigger a C<SEGV>, and potentially leave your cache broken.
+
+You can avoid this by manually destroying the cache with:
+
+  undef $cache
+
+Prior to global destruction.
+
+=head2 db_flags
+
+Flags to pass to C<OpenDB>/C<< LMDB_File->open >>.
+
+See L<< C<LMDB_File>'s constructor options|LMDB_File/LMDB_File >> for details.
+
+  use LMDB_File qw( MDB_CREATE );
+
+  db_flags => MDB_CREATE # default
+
+=head2 tx_flags
+
+Flags to pass to C<< LMDB::Env->new >>
+
+See L<< C<LMDB::Env>'s constructor options|LMDB_File/LMDB::Env >> for details.
+
+Default is C<0>
+
+  tx_flags => 0 # no flags
+
+=head2 put_flags
+
+Flags to pass to C<< ->put(k,v,WRITE_FLAGS) >>.
+
+See L<< LMDB_File->put options|LMDB_File/LMDB_File >> for details.
+
+=head2 mapsize
+
+Passes through to C<< LMDB::Env->new( mapsize => ... ) >>
+
+Default value is taken from L</cache_size> with some C<m/k> math if its set.
+
+=head2 maxreaders
+
+B<TODO:> Currently not defined due to https://rt.cpan.org/Public/Bug/Display.html?id=98821
+
+Passes through to C<< LMDB::Env->new( maxreaders => ... ) >>
+
+=head2 maxdbs
+
+Passes through to C<< LMDB::Env->new( maxdbs => ... ) >>
+
+Defines how many CHI namespaces ( Databases ) a path can contain.
+
+Default is 1024.
+
+=head2 mode
+
+Passes through to C<< LMDB::Env->new( mode => ... ) >>
+
+Defines the permissions on created DB Objects.
+
+Defaults to C<oct 600> == C<-rw------->
+
+=head2 flags
+
+Passes through to C<< LMDB::Env->new( flags => ... ) >>
+
+=head1 PERFORMANCE
+
+If write performance is a little slow for you ( due to the defaults being a single 
+transaction per SET/GET operation, and transactions being flushed to disk when written ), 
+there are two ways you can make performance a little speedy.
+
+=head2 Single Transaction Mode.
+
+If you pass C<< single_txn => 1 >> the cache will be given a single transaction
+for the life of its existance. However, pay attention to the warnings about cleaning 
+up properly in L</single_txn>.
+
+Also, this mode is less ideal if you want to have two processes sharing a cache,
+because the data won't be visible on the other one till it exits! :)
+
+=head2 NOSYNC Mode.
+
+You can also tell LMDB B<NOT> to call C<sync> at the end of every transaction,
+and this will greatly improve write performance due to IO being greatly delayed.
+
+This greatly weakens the databases consistency, but that seems like a respectable
+compromise for a mere cache backend, where a missing record is a performance hit, not a loss of data.
+
+  use LMDB_File qw( MDB_NOSYNC MDB_NOMETASYNC );
+  ...
+  my $cache = CHI->new(
+    ...
+    flags => MDB_NOSYNC | MDB_NOMETASYNC
+  );
+
+This for me cuts down an operation that takes 30 seconds worth of writes down to 6 =).
+
+=head1 Comparison vs FastMmap
+
+FastMmap is still faster for reads. Here is a simple comparison for runs 
+of my C<dep_changes.pl> utility which does a respectable amount of cache lookups.
+
+L<< Google Docs Image|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=interactive >>
+
+=for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=image"></a></center>
+
+For writes, whether or not FastMmap is faster depends on settings.
+
+=over 4 
+
+=item * C<NOSYNC> + C<single_txn = 1> tends to give faster performance than C<FastMmap>.
+
+=item * C<NOSYNC> + C<single_txn = 0> gives comparable performance to C<FastMmap>
+
+=item * C<SYNC>   + C<single_txn = 1> tends to give slightly worse performance than C<FastMmap>
+
+=back
+
+L<< Google Docs Image|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=interactive >>
+
+=for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=image"></a></center>
+
+However,
+
+=over 4
+
+=item * C<SYNC> + C<single_txn = 0> gives much worse performance than all of the above.
+
+=back
+
+L<< Google Docs Image|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive >>
+
+=for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=image"></a></center>
 
 =head1 AUTHOR
 
