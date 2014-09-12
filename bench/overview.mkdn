@@ -1,0 +1,12 @@
+<div>
+  <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=550611242&amp;format=interactive"></iframe>
+</div>
+<div>
+  <iframe width="918" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1357107157&amp;format=interactive"></iframe>
+</div>
+<div>
+  <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=884476313&amp;format=interactive"></iframe>
+</div>
+<div>
+  <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1513813583&amp;format=interactive"></iframe>
+</div>
