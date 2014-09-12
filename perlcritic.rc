@@ -269,7 +269,7 @@ allowed_pragmata = diagnostics feature perlversion strict warnings utf8
 
 [Moose::RequireMakeImmutable]
 
-[NamingConventions::Capitalization]
+[-NamingConventions::Capitalization]
 
 [NamingConventions::ProhibitAmbiguousNames]
 

@@ -30,7 +30,7 @@ if ( $ENV{CHI_KEEP_TEMP_DIR} ) {
 my $extra_options = {
   mapsize => 15 * 1024 * 1024,
   ## no critic (Bangs::ProhibitBitwiseOperators)
-  flags   => MDB_NOSYNC | MDB_NOMETASYNC,
+  flags => MDB_NOSYNC | MDB_NOMETASYNC,
 };
 
 sub new_cache_options {
