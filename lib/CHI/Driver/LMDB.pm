@@ -140,9 +140,9 @@ sub remove {
     # https://rt.cpan.org/Public/Bug/Display.html?id=98671
     $self->_in_txn(
         sub {
-            my ( $tx, $db ) = @_;
+            my ( undef, $db ) = @_;
             $db->del( $key, undef );
-        }
+        },
     );
     return;
 }
@@ -159,6 +159,7 @@ sub clear {
             }
         }
     );
+    return;
 }
 
 sub fetch_multi_hashref {
