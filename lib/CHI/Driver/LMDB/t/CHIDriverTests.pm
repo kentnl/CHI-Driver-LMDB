@@ -12,19 +12,20 @@ our $VERSION = '0.001000';
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
 
 use CHI::Test;
+use Carp qw( carp );
 use Path::Tiny;
 use parent qw( CHI::t::Driver );
 
-sub testing_driver_class    { 'CHI::Driver::LMDB' }
-sub supports_get_namespaces { 0 }
+sub testing_driver_class    { return 'CHI::Driver::LMDB' }
+sub supports_get_namespaces { return 0 }
 
-use LMDB_File qw( :all );
+use LMDB_File qw( MDB_NOSYNC MDB_NOMETASYNC );
 
 my $tempdir = Path::Tiny->tempdir;
 
 if ( $ENV{CHI_KEEP_TEMP_DIR} ) {
   $tempdir->[Path::Tiny::TEMP]->unlink_on_destroy(0);
-  warn "Tempdir kept at $tempdir";
+  carp "Tempdir kept at $tempdir";
 }
 my $extra_options = {
   mapsize => 15 * 1024 * 1024,
