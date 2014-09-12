@@ -24,7 +24,6 @@ provides:
     version: '0.001000'
 requires:
   CHI::Driver: '0'
-  CHI::Test: '0'
   Carp: '0'
   File::Spec::Functions: '0'
   LMDB_File: '0'
@@ -43,7 +42,6 @@ version: '0.001000'
 x_BuiltWith:
   modules:
     CHI::Driver: '0.58'
-    CHI::Test: '0.58'
     CPAN::Meta: '2.142060'
     Carp: '1.34'
     Dist::Zilla::App::Command::bakeini: '0.001002'
@@ -577,6 +575,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::RemovePrereqs:
           modules_to_remove:
             - CHI::t::Driver
+            - CHI::Test
       name: RemovePrereqs
       version: '5.020'
     -

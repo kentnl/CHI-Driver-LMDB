@@ -21,7 +21,6 @@ my %WriteMakefileArgs = (
   "NAME" => "CHI::Driver::LMDB",
   "PREREQ_PM" => {
     "CHI::Driver" => 0,
-    "CHI::Test" => 0,
     "Carp" => 0,
     "File::Spec::Functions" => 0,
     "LMDB_File" => 0,
@@ -46,7 +45,6 @@ my %WriteMakefileArgs = (
 
 my %FallbackPrereqs = (
   "CHI::Driver" => 0,
-  "CHI::Test" => 0,
   "Carp" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,

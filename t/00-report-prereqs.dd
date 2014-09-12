@@ -68,7 +68,6 @@ do { my $x = {
        'runtime' => {
                       'requires' => {
                                       'CHI::Driver' => '0',
-                                      'CHI::Test' => '0',
                                       'Carp' => '0',
                                       'File::Spec::Functions' => '0',
                                       'LMDB_File' => '0',
