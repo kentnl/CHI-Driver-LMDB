@@ -12,7 +12,7 @@ our $VERSION = '0.001000';
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
 
 use Carp qw( croak );
-use Moo qw( extends has );
+use Moo qw( extends has around );
 use Path::Tiny qw( path );
 use File::Spec::Functions qw( tmpdir );
 use LMDB_File qw( MDB_CREATE MDB_NEXT );
