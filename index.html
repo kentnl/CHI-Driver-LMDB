@@ -1,12 +1,37 @@
+<html>
+<style>
+iframe { width: 100%; height: 400px; border: 0px }
+</style>
+<body>
 <div>
-  <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=550611242&amp;format=interactive"></iframe>
+  Read Performance is slightly better with Single Transactions, 
+  but both Single and Mutliple Transaction modes are comparable to FastMmap.
+  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=927240356&amp;format=interactive"></iframe>
 </div>
 <div>
-  <iframe width="918" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1357107157&amp;format=interactive"></iframe>
+  <div>  <b>M</b>ultiTransactions + <b>S</b>ync is slow </div>
+  <div>  <b>M</b>ultiTransactions + <b>N</b>o<b>M</b>eta<b>S</b>ync is slightly faster</div>
+
+  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=550611242&amp;format=interactive"></iframe>
 </div>
 <div>
-  <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=884476313&amp;format=interactive"></iframe>
+  <div>  <b>S</b>ingle Transactions + <b>S</b>ync is 3rd Slowest </div>
+  <div>  <b>S</b>ingle Transactions + <b>N</b>o<b>M</b>eta<b>S</b>ync is slightly faster</div>
+
+  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1357107157&amp;format=interactive"></iframe>
 </div>
 <div>
-  <iframe width="600" height="371" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1513813583&amp;format=interactive"></iframe>
+  <div>  <b>M</b>ultiTransactions + <b>N</b>o<b>S</b>ync is 5th Slowest </div>
+  <div>  <b>M</b>ultiTransactions + <b>N</b>o<b>A</b>ny*<b>S</b>ync is not much better ( Any = NoMetaSys + NoSync )</div>
+
+  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=884476313&amp;format=interactive"></iframe>
 </div>
+<div>
+  <div>  <b>S</b>ingleTransactions + <b>N</b>o<b>S</b>ync is fastest</div>
+  <div>  <b>S</b>ingleTransactions + <b>N</b>o<b>A</b>ny*<b>S</b>ync is about as good ( Any = NoMetaSys + NoSync )</div>
+  <div>  Somehow, both end up slightly faster than FastMmap</div>
+  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1513813583&amp;format=interactive"></iframe>
+</div>
+</body>
+</html>
+
