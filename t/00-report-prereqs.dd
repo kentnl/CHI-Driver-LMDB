@@ -87,9 +87,15 @@ do { my $x = {
                                      'Test::More' => '1.001006'
                                    },
                    'requires' => {
+                                   'Date::Parse' => '0',
                                    'ExtUtils::MakeMaker' => '0',
                                    'File::Spec' => '0',
-                                   'Test::More' => '0.89'
+                                   'Test::Builder' => '0',
+                                   'Test::Class' => '0',
+                                   'Test::Deep' => '0',
+                                   'Test::Exception' => '0',
+                                   'Test::More' => '0.89',
+                                   'Test::Warn' => '0'
                                  }
                  }
      };
