@@ -1,7 +1,4 @@
 language: perl
-env:
-  - VERBOSE_TESTING=1
-  - CONFESS=1
 matrix:
   allow_failures:
     - perl: "5.8"
@@ -39,6 +36,8 @@ matrix:
 before_install:
   - perlbrew list
   - time git clone --depth 10 https://github.com/kentfredric/travis-scripts.git maint-travis-ci
+  - export VERBOSE_TESTING=1
+  - export CONFESS=1
   - time git -C ./maint-travis-ci reset --hard master
   - time perl ./maint-travis-ci/branch_reset.pl
   - time perl ./maint-travis-ci/sterilize_env.pl
