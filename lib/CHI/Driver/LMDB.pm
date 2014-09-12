@@ -126,9 +126,9 @@ sub fetch {
     my $rval;
     $self->_in_txn(
         sub {
-            my ( $tx, $db ) = @_;
+            my ( undef, $db ) = @_;
             $rval = $db->get($key);
-        }
+        },
     );
     return $rval;
 }
