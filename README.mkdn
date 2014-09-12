@@ -4,7 +4,7 @@ CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 # VERSION
 
-version 0.001000
+version 0.001001
 
 # SYNOPSIS
 
