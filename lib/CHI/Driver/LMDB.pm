@@ -47,7 +47,7 @@ my $sizes = {
 sub _build_mapsize {
   my ( $self ) = @_;
   my $cache_size = $self->cache_size;
-  if ( $cache_size =~ s/([km])$//i ) {
+  if ( $cache_size =~ s/([km])\z//msxi ) {
     $cache_size *= $sizes->{ lc($1) };
   }
   return $cache_size;
