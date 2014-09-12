@@ -59,7 +59,7 @@ has '_lmdb_max_key' => ( is => 'ro', builder => '_build_lmdb_max_key', lazy => 1
 
 sub _build_lmdb_env {
   my ($self) = @_;
-  return LMDB::Env->new( $self->_existing_root_dir . q[], { map { $_ => $self->$_() } keys %{env_opts} } );
+  return LMDB::Env->new( $self->_existing_root_dir . q[], { map { $_ => $self->$_() } keys %{$env_opts} } );
 }
 
 sub _build_lmdb_max_key {
@@ -72,6 +72,7 @@ sub BUILD {
   if ( $self->single_txn ) {
     $self->{in_txn} = $self->_mk_txn;
   }
+  return;
 }
 
 sub DEMOLISH {
@@ -80,6 +81,7 @@ sub DEMOLISH {
     $self->{in_txn}->[0]->commit;
     delete $self->{in_txn};
   }
+  return;
 }
 
 sub _mk_txn {
