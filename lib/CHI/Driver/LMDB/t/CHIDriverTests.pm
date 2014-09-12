@@ -44,3 +44,10 @@ sub new_cache_options {
 
 1;
 
+=begin Pod::Coverage
+
+new_cache_options supports_get_namespaces testing_driver_class
+
+=end Pod::Coverage
+
+=cut

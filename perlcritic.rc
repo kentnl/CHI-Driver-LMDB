@@ -126,7 +126,7 @@ allow_includes = 1
 
 [Documentation::PodSpelling]
 spell_command = aspell list --lang en_US
-stop_words = OpenLDAPs LMDB backend
+stop_words = OpenLDAPs LMDB backend TODO namespaces FastMmap
 
 [Documentation::ProhibitAdjacentLinks]
 
@@ -354,8 +354,7 @@ equivalent_modules = Moose Moo
 [TestingAndDebugging::RequireUseWarnings]
 equivalent_modules = Moose Moo
 
-[Tics::ProhibitLongLines]
-base_max = 130
+[-Tics::ProhibitLongLines]
 
 [Tics::ProhibitManyArrows]
 
