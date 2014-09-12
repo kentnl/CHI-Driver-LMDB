@@ -5,6 +5,8 @@ use utf8;
 
 package CHI::Driver::LMDB::t::CHIDriverTests;
 
+our $VERSION = '0.001000';
+
 # ABSTRACT: Test suite for LMDB driver
 
 our $AUTHORITY = 'cpan:KENTNL'; # AUTHORITY
@@ -32,8 +34,8 @@ my $extra_options = {
 sub new_cache_options {
   my $self = shift;
   return (
-    root_dir         => $tempdir,
-    lmdb_env_options => $extra_options,
+    root_dir => $tempdir,
+    %$extra_options,
     $self->SUPER::new_cache_options()
   );
 }

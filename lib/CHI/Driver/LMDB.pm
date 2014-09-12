@@ -18,27 +18,31 @@ use File::Spec::Functions qw( tmpdir );
 use LMDB_File qw( :dbflags :cursor_op );
 extends 'CHI::Driver';
 
-has 'dir_create_mode' => ( is => 'ro', default => sub { oct(775) } );
-has 'root_dir'   => ( is => 'ro', lazy => 1, builder => '_build_root_dir' );
-has 'cache_size' => ( is => 'ro', lazy => 1, default => '5m' );
-has 'single_txn' => ( is => 'ro', lazy => 1, default => sub { undef } );
-has 'db_flags'   => ( is => 'ro', lazy => 1, default => MDB_CREATE );
-has 'tx_flags'   => ( is => 'ro', lazy => 1, default => 0 );
-has 'put_flags'  => ( is => 'ro', lazy => 1, default => 0 );
+has 'dir_create_mode' => ( is => 'ro', lazy => 1, default => oct(775) );
+has 'root_dir'        => ( is => 'ro', lazy => 1, builder => '_build_root_dir' );
+has 'cache_size'      => ( is => 'ro', lazy => 1, default => '5m' );
+has 'single_txn'      => ( is => 'ro', lazy => 1, default => sub { undef } );
+has 'db_flags'        => ( is => 'ro', lazy => 1, default => MDB_CREATE );
+has 'tx_flags'        => ( is => 'ro', lazy => 1, default => 0 );
+has 'put_flags'       => ( is => 'ro', lazy => 1, default => 0 );
 
 my %env_opts = (
-  mapsize    => { is => 'ro', builder => '_build_mapsize' },
-  maxreaders => { is => 'ro', default => 126 },
-  maxdbs     => { is => 'ro', default => 1024 },
-  mode       => { is => 'ro', default => oct(600) },
-  flags      => { is => 'ro', default => 0 },
+  mapsize => { is => 'ro', lazy => 1, builder => '_build_mapsize' },
+
+  # TODO: Uncomment this line when https://rt.cpan.org/Public/Bug/Display.html?id=98821 is solved.
+  #   maxreaders => { is => 'ro', lazy => 1, default => 126 },
+  maxdbs => { is => 'ro', lazy => 1, default => 1024 },
+  mode   => { is => 'ro', lazy => 1, default => oct(600) },
+  flags  => { is => 'ro', lazy => 1, default => 0 },
 );
 
 for my $attr ( keys %env_opts ) {
   has $attr => %{ $env_opts{$attr} };
 }
 
-sub _build_root_dir { return path( tmpdir() )->child('chi-driver-lmdb') }
+sub _build_root_dir {
+  return path( tmpdir() )->child( 'chi-driver-lmdb-' . $> );
+}
 
 has '_existing_root_dir' => ( is => 'ro', lazy => 1, builder => '_build_existing_root_dir' );
 
@@ -50,12 +54,12 @@ sub _build_existing_root_dir {
   return $dir;
 }
 
-has '_lmdb_env'     => ( is => 'ro', builder => '_build_lmdb_env' );
-has '_lmdb_max_key' => ( is => 'ro', builder => '_build_lmdb_max_key' );
+has '_lmdb_env'     => ( is => 'ro', builder => '_build_lmdb_env',     lazy => 1, );
+has '_lmdb_max_key' => ( is => 'ro', builder => '_build_lmdb_max_key', lazy => 1 );
 
 sub _build_lmdb_env {
   my ($self) = @_;
-  return LMDB::Env->new( $self->_existing_root_dir, { map { $_ => $self->$_() } keys %{env_opts} } );
+  return LMDB::Env->new( $self->_existing_root_dir . q[], { map { $_ => $self->$_() } keys %{env_opts} } );
 }
 
 sub _build_lmdb_max_key {
@@ -80,6 +84,9 @@ sub DEMOLISH {
 
 sub _mk_txn {
   my ($self) = @_;
+
+  # TODO: Use slightly more natural ->OpenDB
+  # https://rt.cpan.org/Public/Bug/Display.html?id=98681
   my $tx = $self->_lmdb_env->BeginTxn();
   $tx->AutoCommit(1);
   my $db = LMDB_File->open( $tx, $self->namespace, $self->db_flags );
@@ -121,6 +128,9 @@ sub fetch {
 
 sub remove {
   my ( $self, $key ) = @_;
+
+  # TODO: Eliminate need for undef
+  # https://rt.cpan.org/Public/Bug/Display.html?id=98671
   $self->_in_txn(
     sub {
       my ( $tx, $db ) = @_;
@@ -132,6 +142,7 @@ sub remove {
 sub clear {
   my ($self) = @_;
 
+  # TODO: Implement in mdb_drop https://rt.cpan.org/Public/Bug/Display.html?id=98682
   $self->_in_txn(
     sub {
       my ( $tx, $db ) = @_;
