@@ -144,6 +144,7 @@ sub remove {
             $db->del( $key, undef );
         }
     );
+    return;
 }
 
 sub clear {
