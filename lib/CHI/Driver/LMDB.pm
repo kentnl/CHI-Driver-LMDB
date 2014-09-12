@@ -16,14 +16,27 @@ use Moo qw( extends has );
 use Path::Tiny qw( path );
 use File::Spec::Functions qw( tmpdir );
 use LMDB_File qw( :dbflags :cursor_op );
-
 extends 'CHI::Driver';
 
 has 'dir_create_mode' => ( is => 'ro', default => sub { oct(775) } );
-
-has 'root_dir' => ( is => 'ro', lazy => 1, builder => '_build_root_dir' );
-
+has 'root_dir'   => ( is => 'ro', lazy => 1, builder => '_build_root_dir' );
 has 'cache_size' => ( is => 'ro', lazy => 1, default => '5m' );
+has 'single_txn' => ( is => 'ro', lazy => 1, default => sub { undef } );
+has 'db_flags'   => ( is => 'ro', lazy => 1, default => MDB_CREATE );
+has 'tx_flags'   => ( is => 'ro', lazy => 1, default => 0 );
+has 'put_flags'  => ( is => 'ro', lazy => 1, default => 0 );
+
+my %env_opts = (
+  mapsize    => { is => 'ro', builder => '_build_mapsize' },
+  maxreaders => { is => 'ro', default => 126 },
+  maxdbs     => { is => 'ro', default => 1024 },
+  mode       => { is => 'ro', default => oct(600) },
+  flags      => { is => 'ro', default => 0 },
+);
+
+for my $attr ( keys %env_opts ) {
+  has $attr => %{ $env_opts{$attr} };
+}
 
 sub _build_root_dir { return path( tmpdir() )->child('chi-driver-lmdb') }
 
@@ -37,33 +50,17 @@ sub _build_existing_root_dir {
   return $dir;
 }
 
-has 'lmdb_env_params' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env_params' );
-
-sub _build_lmdb_env_params {
-  my ($self) = @_;
-  return [ $self->_existing_root_dir, { maxdbs => 1024, %{ $self->lmdb_env_options } } ];
-}
-
-has 'lmdb_env_options' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env_options' );
-
-my %Sizes = ( k => 1024, m => 1024 * 1024 );
-
-sub _build_lmdb_env_options {
-  my ($self) = @_;
-  my $cache_size = $self->cache_size;
-
-  $cache_size *= $Sizes{ lc($1) } if $cache_size =~ s/([km])$//i;
-
-  return { mapsize => $cache_size };
-}
-
-has '_lmdb_env' => ( is => 'ro', lazy => 1, builder => '_build_lmdb_env' );
-
-has 'single_txn' => ( is => 'ro', lazy => 1, default => sub { undef } );
+has '_lmdb_env'     => ( is => 'ro', builder => '_build_lmdb_env' );
+has '_lmdb_max_key' => ( is => 'ro', builder => '_build_lmdb_max_key' );
 
 sub _build_lmdb_env {
   my ($self) = @_;
-  return LMDB::Env->new( @{ $self->lmdb_env_params } );
+  return LMDB::Env->new( $self->_existing_root_dir, { map { $_ => $self->$_() } keys %{env_opts} } );
+}
+
+sub _build_lmdb_max_key {
+  my ($self) = @_;
+  return $self->_lmdb_env->get_maxkeysize;
 }
 
 sub BUILD {
@@ -85,7 +82,7 @@ sub _mk_txn {
   my ($self) = @_;
   my $tx = $self->_lmdb_env->BeginTxn();
   $tx->AutoCommit(1);
-  my $db = LMDB_File->open( $tx, $self->namespace, MDB_CREATE );
+  my $db = LMDB_File->open( $tx, $self->namespace, $self->db_flags );
   return [ $tx, $db ];
 }
 
@@ -105,7 +102,7 @@ sub store {
   $self->_in_txn(
     sub {
       my ( $tx, $db ) = @_;
-      $db->put( $key, $data );
+      $db->put( $key, $data, $self->put_flags );
     }
   );
 }
@@ -195,7 +192,7 @@ sub get_namespaces { croak 'not supported' }
 around max_key_length => sub {
   my ( $orig, $self, @args ) = @_;
   my $rval     = $self->$orig(@args);
-  my $real_max = $self->_lmdb_env->get_maxkeysize;
+  my $real_max = $self->_lmdb_max_key;
   return $rval > $real_max ? $real_max : $rval;
 };
 
