@@ -124,14 +124,14 @@ PERFORMANCE
 
   Single Transaction Mode.
     If you pass "single_txn => 1" the cache will be given a single
-    transaction for the life of its existance. However, pay attention to the
+    transaction for the life of its existence. However, pay attention to the
     warnings about cleaning up properly in "single_txn".
 
     Also, this mode is less ideal if you want to have two processes sharing
     a cache, because the data won't be visible on the other one till it
     exits! ☺
 
-  NOSYNC Mode.
+  "NOSYNC" Mode.
     You can also tell LMDB NOT to call "sync" at the end of every
     transaction, and this will greatly improve write performance due to IO
     being greatly delayed.
@@ -153,7 +153,7 @@ PERFORMANCE
 Comparison vs FastMmap
     FastMmap is still faster for reads. Here is a simple comparison for runs
     of my "dep_changes.pl" utility which does a respectable amount of cache
-    lookups.
+    look-ups.
 
     Google Docs Image
     <https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfN
