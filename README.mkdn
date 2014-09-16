@@ -103,8 +103,6 @@ Default value is taken from ["cache\_size"](#cache_size) with some `m/k` math if
 
 ## `maxreaders`
 
-**TODO:** Currently not defined due to [rt#98821](https://rt.cpan.org/Public/Bug/Display.html?id=98821)
-
 Passes through to `LMDB::Env->new( maxreaders => ... )`
 
 ## `maxdbs`

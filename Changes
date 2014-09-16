@@ -3,6 +3,7 @@ Release history for CHI-Driver-LMDB
 {{$NEXT}}
  [Bugfix]
  - use newer LMDB_File to have ->OpenDB work.
+ - enable maxreaders attribute.
 
  [Dependencies::Stats]
  - Dependencies changed since 0.001000, see misc/*.deps* for details

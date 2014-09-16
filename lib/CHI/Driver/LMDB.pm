@@ -27,13 +27,11 @@ has 'tx_flags'        => ( is => 'ro', lazy => 1, default => 0 );
 has 'put_flags'       => ( is => 'ro', lazy => 1, default => 0 );
 
 my %env_opts = (
-  mapsize => { is => 'ro', lazy => 1, builder => '_build_mapsize' },
-
-  # TODO: Uncomment this line when https://rt.cpan.org/Public/Bug/Display.html?id=98821 is solved.
-  #   maxreaders => { is => 'ro', lazy => 1, default => 126 },
-  maxdbs => { is => 'ro', lazy => 1, default => 1024 },
-  mode   => { is => 'ro', lazy => 1, default => oct 600 },
-  flags  => { is => 'ro', lazy => 1, default => 0 },
+  mapsize    => { is => 'ro', lazy => 1, builder => '_build_mapsize' },
+  maxreaders => { is => 'ro', lazy => 1, default => 126 },
+  maxdbs     => { is => 'ro', lazy => 1, default => 1024 },
+  mode       => { is => 'ro', lazy => 1, default => oct 600 },
+  flags      => { is => 'ro', lazy => 1, default => 0 },
 );
 
 for my $attr ( keys %env_opts ) {
@@ -324,8 +322,6 @@ Passes through to C<< LMDB::Env->new( mapsize => ... ) >>
 Default value is taken from L</cache_size> with some C<m/k> math if its set.
 
 =attr C<maxreaders>
-
-B<TODO:> Currently not defined due to L<< rt#98821|https://rt.cpan.org/Public/Bug/Display.html?id=98821 >>
 
 Passes through to C<< LMDB::Env->new( maxreaders => ... ) >>
 
