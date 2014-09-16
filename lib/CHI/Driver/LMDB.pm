@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB;
 
-our $VERSION = '0.002000';
+our $VERSION = '0.002001';
 
 # ABSTRACT: use OpenLDAPs LMDB Key-Value store as a cache backend.
 
@@ -235,7 +235,7 @@ CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 =head1 VERSION
 
-version 0.002000
+version 0.002001
 
 =head1 SYNOPSIS
 

@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB::t::CHIDriverTests;
 
-our $VERSION = '0.002000';
+our $VERSION = '0.002001';
 
 # ABSTRACT: Test suite for LMDB driver
 
@@ -56,7 +56,7 @@ CHI::Driver::LMDB::t::CHIDriverTests - Test suite for LMDB driver
 
 =head1 VERSION
 
-version 0.002000
+version 0.002001
 
 =for Pod::Coverage new_cache_options supports_get_namespaces testing_driver_class
 
