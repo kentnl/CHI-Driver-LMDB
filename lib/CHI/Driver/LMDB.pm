@@ -157,13 +157,10 @@ sub remove {
 sub clear {
   my ($self) = @_;
 
-  # TODO: Implement in mdb_drop https://rt.cpan.org/Public/Bug/Display.html?id=98682
   $self->_in_txn(
     sub {
       my ( undef, $db ) = @_;
-      for my $key ( $self->get_keys ) {
-        $db->del( $key, undef );
-      }
+      $db->drop;
     },
   );
   return;
