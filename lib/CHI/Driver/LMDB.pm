@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB;
 
-our $VERSION = '0.001001';
+our $VERSION = '0.002000';
 
 # ABSTRACT: use OpenLDAPs LMDB Key-Value store as a cache backend.
 
@@ -27,13 +27,11 @@ has 'tx_flags'        => ( is => 'ro', lazy => 1, default => 0 );
 has 'put_flags'       => ( is => 'ro', lazy => 1, default => 0 );
 
 my %env_opts = (
-  mapsize => { is => 'ro', lazy => 1, builder => '_build_mapsize' },
-
-  # TODO: Uncomment this line when https://rt.cpan.org/Public/Bug/Display.html?id=98821 is solved.
-  #   maxreaders => { is => 'ro', lazy => 1, default => 126 },
-  maxdbs => { is => 'ro', lazy => 1, default => 1024 },
-  mode   => { is => 'ro', lazy => 1, default => oct 600 },
-  flags  => { is => 'ro', lazy => 1, default => 0 },
+  mapsize    => { is => 'ro', lazy => 1, builder => '_build_mapsize' },
+  maxreaders => { is => 'ro', lazy => 1, default => 126 },
+  maxdbs     => { is => 'ro', lazy => 1, default => 1024 },
+  mode       => { is => 'ro', lazy => 1, default => oct 600 },
+  flags      => { is => 'ro', lazy => 1, default => 0 },
 );
 
 for my $attr ( keys %env_opts ) {
@@ -145,12 +143,10 @@ sub fetch {
 sub remove {
   my ( $self, $key ) = @_;
 
-  # TODO: Eliminate need for undef
-  # https://rt.cpan.org/Public/Bug/Display.html?id=98671
   $self->_in_txn(
     sub {
       my ( undef, $db ) = @_;
-      $db->del( $key, undef );
+      $db->del($key);
     },
   );
   return;
@@ -159,13 +155,10 @@ sub remove {
 sub clear {
   my ($self) = @_;
 
-  # TODO: Implement in mdb_drop https://rt.cpan.org/Public/Bug/Display.html?id=98682
   $self->_in_txn(
     sub {
       my ( undef, $db ) = @_;
-      for my $key ( $self->get_keys ) {
-        $db->del( $key, undef );
-      }
+      $db->drop;
     },
   );
   return;
@@ -242,7 +235,7 @@ CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 =head1 VERSION
 
-version 0.001001
+version 0.002000
 
 =head1 SYNOPSIS
 
@@ -340,8 +333,6 @@ Passes through to C<< LMDB::Env->new( mapsize => ... ) >>
 Default value is taken from L</cache_size> with some C<m/k> math if its set.
 
 =head2 C<maxreaders>
-
-B<TODO:> Currently not defined due to L<< rt#98821|https://rt.cpan.org/Public/Bug/Display.html?id=98821 >>
 
 Passes through to C<< LMDB::Env->new( maxreaders => ... ) >>
 
