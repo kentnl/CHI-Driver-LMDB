@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB;
 
-our $VERSION = '0.001001';
+our $VERSION = '0.002000';
 
 # ABSTRACT: use OpenLDAPs LMDB Key-Value store as a cache backend.
 
@@ -15,7 +15,7 @@ use Carp qw( croak );
 use Moo qw( extends has around );
 use Path::Tiny qw( path );
 use File::Spec::Functions qw( tmpdir );
-use LMDB_File qw( MDB_CREATE MDB_NEXT );
+use LMDB_File 0.006 qw( MDB_CREATE MDB_NEXT );
 extends 'CHI::Driver';
 
 has 'dir_create_mode' => ( is => 'ro', lazy => 1, default => oct 775 );
@@ -101,11 +101,9 @@ sub DEMOLISH {
 sub _mk_txn {
   my ($self) = @_;
 
-  # TODO: Use slightly more natural ->OpenDB
-  # https://rt.cpan.org/Public/Bug/Display.html?id=98681
   my $tx = $self->_lmdb_env->BeginTxn();
   $tx->AutoCommit(1);
-  my $db = LMDB_File->open( $tx, $self->namespace, $self->db_flags );
+  my $db = $tx->OpenDB( { dbname => $self->namespace, flags => $self->db_flags } );
   return [ $tx, $db ];
 }
 

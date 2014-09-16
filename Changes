@@ -1,6 +1,12 @@
 Release history for CHI-Driver-LMDB
 
 {{$NEXT}}
+ [Bugfix]
+ - use newer LMDB_File to have ->OpenDB work.
+
+ [Dependencies::Stats]
+ - Dependencies changed since 0.001000, see misc/*.deps* for details
+ - runtime: ↑1
 
 0.001000 2014-09-12T12:55:45Z
  - First version.
