@@ -7,12 +7,12 @@ use strict;
 use warnings;
 use utf8;
 
-$ENV{KEY_SIZE} = 256;
+$ENV{KEY_SIZE}   = 256;
 $ENV{VALUE_SIZE} = 256;
-$ENV{TEST_MAX} = 100;
-for my $test ( 0..8 ) {
+$ENV{TEST_MAX}   = 100;
+for my $test ( 0 .. 8 ) {
   for ( 0 .. 50 ) {
     $ENV{TEST_ID} = $test;
-    system($^X, 'bench/id_bench.pl') == 0 or die;
+    system( $^X, 'bench/id_bench.pl' ) == 0 or die;
   }
 }

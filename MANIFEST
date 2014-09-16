@@ -11,9 +11,6 @@ META.yml
 Makefile.PL
 README
 bench/id_bench.pl
-bench/overview.mkdn
-bench/results.csv.xz
-bench/results_inclusive.csv.xz
 bench/runbench.pl
 dist.ini
 dist.ini.meta
