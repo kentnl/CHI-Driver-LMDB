@@ -143,12 +143,10 @@ sub fetch {
 sub remove {
   my ( $self, $key ) = @_;
 
-  # TODO: Eliminate need for undef
-  # https://rt.cpan.org/Public/Bug/Display.html?id=98671
   $self->_in_txn(
     sub {
       my ( undef, $db ) = @_;
-      $db->del( $key, undef );
+      $db->del($key);
     },
   );
   return;
