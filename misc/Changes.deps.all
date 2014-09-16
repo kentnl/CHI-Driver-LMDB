@@ -1,0 +1,6 @@
+This file contains ALL changes in dependencies in both REQUIRED / OPTIONAL dependencies for all phases (configure/build/runtime/test/develop)
+
+0.002000
+ [Changed / runtime requires]
+ - LMDB_File 0 → 0.006
+

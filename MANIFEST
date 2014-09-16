@@ -10,11 +10,17 @@ META.json
 META.yml
 Makefile.PL
 README
+bench/id_bench.pl
+bench/runbench.pl
 dist.ini
 dist.ini.meta
 lib/CHI/Driver/LMDB.pm
 lib/CHI/Driver/LMDB/t/CHIDriverTests.pm
 maint/perlcritic.rc.gen.pl
+misc/Changes.deps
+misc/Changes.deps.all
+misc/Changes.deps.dev
+misc/Changes.deps.opt
 misc/perlcritic.deps
 perlcritic.rc
 t/00-compile/lib_CHI_Driver_LMDB_pm.t

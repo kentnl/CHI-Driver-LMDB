@@ -3,7 +3,7 @@ NAME
     backend.
 
 VERSION
-    version 0.001000
+    version 0.002000
 
 SYNOPSIS
       use CHI;
@@ -94,9 +94,6 @@ ATTRIBUTES
     set.
 
   "maxreaders"
-    TODO: Currently not defined due to rt#98821
-    <https://rt.cpan.org/Public/Bug/Display.html?id=98821>
-
     Passes through to "LMDB::Env->new( maxreaders => ... )"
 
   "maxdbs"

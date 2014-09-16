@@ -23,7 +23,7 @@ my %WriteMakefileArgs = (
     "CHI::Driver" => 0,
     "Carp" => 0,
     "File::Spec::Functions" => 0,
-    "LMDB_File" => 0,
+    "LMDB_File" => "0.006",
     "Moo" => 0,
     "Path::Tiny" => 0,
     "parent" => 0,
@@ -42,7 +42,7 @@ my %WriteMakefileArgs = (
     "Test::More" => "0.89",
     "Test::Warn" => 0
   },
-  "VERSION" => "0.001000",
+  "VERSION" => "0.002000",
   "test" => {
     "TESTS" => "t/*.t t/00-compile/*.t"
   }
@@ -56,7 +56,7 @@ my %FallbackPrereqs = (
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
   "File::Spec::Functions" => 0,
-  "LMDB_File" => 0,
+  "LMDB_File" => "0.006",
   "Moo" => 0,
   "Path::Tiny" => 0,
   "Test::Builder" => 0,
