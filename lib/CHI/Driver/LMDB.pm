@@ -392,7 +392,7 @@ This for me cuts down an operation that takes 30 seconds worth of writes down to
 
 For an in-depth comparison of the performance of various options,
 and how that compares to L<< C<CHI::Driver::FastMmap>|CHI::Driver::FastMmap >>,
-see L<< http://kentnl.github.io/CHI-Driver-FastMmap >>
+see L<< http://kentnl.github.io/CHI-Driver-LMDB >>
 
 =for Pod::Coverage BUILD DEMOLISH clear fetch fetch_multi_hashref get_keys get_namespaces max_key_length remove store store_multi
 
