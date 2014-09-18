@@ -1,6 +1,8 @@
 Release history for CHI-Driver-LMDB
 
-0.002001 2014-09-16T12:35:18Z
+0.002001 2014-09-18T17:40:08Z
+ [Documentation]
+ - Replace performance section with link to much more in depth documentation.
 
 0.002000 2014-09-16T12:25:41Z
  [Bugfix]
