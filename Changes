@@ -1,5 +1,9 @@
 Release history for CHI-Driver-LMDB
 
+0.002002 2014-09-18T18:01:19Z
+ [Documentation]
+ - Get the URL Right. Ugh. Brain--
+
 0.002001 2014-09-18T17:40:08Z
  [Documentation]
  - Replace performance section with link to much more in depth documentation.

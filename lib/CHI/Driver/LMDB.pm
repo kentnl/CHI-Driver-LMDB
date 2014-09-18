@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB;
 
-our $VERSION = '0.002001';
+our $VERSION = '0.002002';
 
 # ABSTRACT: use OpenLDAPs LMDB Key-Value store as a cache backend.
 
@@ -235,7 +235,7 @@ CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 =head1 VERSION
 
-version 0.002001
+version 0.002002
 
 =head1 SYNOPSIS
 
@@ -392,7 +392,7 @@ This for me cuts down an operation that takes 30 seconds worth of writes down to
 
 For an in-depth comparison of the performance of various options,
 and how that compares to L<< C<CHI::Driver::FastMmap>|CHI::Driver::FastMmap >>,
-see L<< http://kentnl.github.io/CHI-Driver-FastMmap >>
+see L<< http://kentnl.github.io/CHI-Driver-LMDB >>
 
 =for Pod::Coverage BUILD DEMOLISH clear fetch fetch_multi_hashref get_keys get_namespaces max_key_length remove store store_multi
 

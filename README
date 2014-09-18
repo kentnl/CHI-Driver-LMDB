@@ -3,7 +3,7 @@ NAME
     backend.
 
 VERSION
-    version 0.002001
+    version 0.002002
 
 SYNOPSIS
       use CHI;
@@ -150,7 +150,7 @@ PERFORMANCE
 In Depth
     For an in-depth comparison of the performance of various options, and
     how that compares to "CHI::Driver::FastMmap", see
-    <http://kentnl.github.io/CHI-Driver-FastMmap>
+    <http://kentnl.github.io/CHI-Driver-LMDB>
 
 AUTHOR
     Kent Fredric <kentnl@cpan.org>

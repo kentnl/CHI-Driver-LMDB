@@ -24,10 +24,10 @@ name: CHI-Driver-LMDB
 provides:
   CHI::Driver::LMDB:
     file: lib/CHI/Driver/LMDB.pm
-    version: '0.002001'
+    version: '0.002002'
   CHI::Driver::LMDB::t::CHIDriverTests:
     file: lib/CHI/Driver/LMDB/t/CHIDriverTests.pm
-    version: '0.002001'
+    version: '0.002002'
 requires:
   CHI::Driver: '0'
   Carp: '0'
@@ -44,7 +44,7 @@ resources:
   bugtracker: https://github.com/kentnl/CHI-Driver-LMDB/issues
   homepage: https://github.com/kentnl/CHI-Driver-LMDB
   repository: https://github.com/kentnl/CHI-Driver-LMDB.git
-version: '0.002001'
+version: '0.002002'
 x_BuiltWith:
   modules:
     CHI::Driver: '0.58'
@@ -457,7 +457,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: '0'
-          tag: 0.002001-source
+          tag: 0.002002-source
           tag_format: '%v-source'
           tag_message: v%v
           time_zone: local
@@ -511,7 +511,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: releases
           signed: '0'
-          tag: '0.002001'
+          tag: '0.002002'
           tag_format: '%v'
           tag_message: v%v
           time_zone: local
