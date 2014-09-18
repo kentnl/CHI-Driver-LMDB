@@ -1,37 +1,171 @@
+<!DOCTYPE html>
 <html>
-<style>
-iframe { width: 100%; height: 400px; border: 0px }
-</style>
-<body>
-<div>
-  Read Performance is slightly better with Single Transactions, 
-  but both Single and Mutliple Transaction modes are comparable to FastMmap.
-  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=927240356&amp;format=interactive"></iframe>
-</div>
-<div>
-  <div>  <b>M</b>ultiTransactions + <b>S</b>ync is slow </div>
-  <div>  <b>M</b>ultiTransactions + <b>N</b>o<b>M</b>eta<b>S</b>ync is slightly faster</div>
+  <head>
+    <title>Performance of CHI::Driver::LMDB</title>
+    <style>
+html {
+  font-family: sans-serif;
+}
+a.img {
+  display: block;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+pre, ul {
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  background-color: rgb(250,250,250);
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+p {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: justify;
+}
+html, body {
+  background-color: rgb(200,200,200);
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+div.container {
+  max-width: 600px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0px;
+  padding: 10px;
+  padding-top: 0.1px; /* Weird bug if its 0 */
+  top: 0;
+  position: relative;
+  box-shadow: rgb(190,190,190) 0px 0px 20px;
+}
 
-  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=550611242&amp;format=interactive"></iframe>
-</div>
-<div>
-  <div>  <b>S</b>ingle Transactions + <b>S</b>ync is 3rd Slowest </div>
-  <div>  <b>S</b>ingle Transactions + <b>N</b>o<b>M</b>eta<b>S</b>ync is slightly faster</div>
 
-  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1357107157&amp;format=interactive"></iframe>
-</div>
-<div>
-  <div>  <b>M</b>ultiTransactions + <b>N</b>o<b>S</b>ync is 5th Slowest </div>
-  <div>  <b>M</b>ultiTransactions + <b>N</b>o<b>A</b>ny*<b>S</b>ync is not much better ( Any = NoMetaSys + NoSync )</div>
+    </style>
+  </head>
+  <body>
+<div class="container">
+<h1>Performance of <code>CHI::Driver::LMDB</code></h1>
 
-  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=884476313&amp;format=interactive"></iframe>
-</div>
-<div>
-  <div>  <b>S</b>ingleTransactions + <b>N</b>o<b>S</b>ync is fastest</div>
-  <div>  <b>S</b>ingleTransactions + <b>N</b>o<b>A</b>ny*<b>S</b>ync is about as good ( Any = NoMetaSys + NoSync )</div>
-  <div>  Somehow, both end up slightly faster than FastMmap</div>
-  <iframe seamless scrolling="no" src="https://docs.google.com/spreadsheets/d/18ReddtUZ9hQMnrXQlk8fKBHqMJIveL5B5Zej9RJAEYQ/pubchart?oid=1513813583&amp;format=interactive"></iframe>
-</div>
-</body>
+<p><code>CHI::Driver::LMDB</code> has a few design decisions and some performance tweaks that can
+  be applied and give a variety of performance results.</p>
+
+<h2 id="txn_multi">Transaction Multiplicity</h2>
+
+<p>One design decision I had to make with how <code>CHI</code> binding works is how it plays
+   in to transactions. Especially as there's no way to work with a <code>LMDB</code> database
+   <em>outside</em> a transaction. ( At least, as far as I am aware )</p>
+
+<p>Also, I encountered technical problems I haven't yet been able iron out or even explain
+   when I attempted to just make everything in a single transaction by default, which amounted
+   to Perl attempting to destroy database components prior to closing the transaction,
+   in the middle of global destruction, causing a <code>SEGV</code>.</p>
+
+<p>Obviously that is not hugely desirable.</p>
+
+<p>This quirk can be avoided by manually cleaning up the <code>CHI</code> object
+   at any time <em>prior</em> to <code>GlobalDestruction</code>, simply by:</p>
+
+<pre><code>undef $chi</code></pre>
+
+<p>or simply letting the object fall out of a lexical scope.</p>
+
+<p>But obviously that risk is large, and the performance penalty of doing the safer alternative,
+  (putting all writes in their own transactions) has to be a considered tradeoff.</p>
+
+<h2 id="fsync"><code>FSYNC</code> modes</h2>
+
+<p><code>LMDB</code> has two tunable options with regards to how it calls <code>fsync</code>
+    on the filesystem.</p>
+<p><code>fsync</code>ing has a reasonable <code>IO</code> cost, and is usually defaulted
+to enabled, because consitency and integrity are high priority for <code>LMDB</code></p>
+
+<p>However, for a cache backend, it is understandable you may not care if your data vaporises
+   if your computer crashes and loses something</p>
+
+<ul>
+  <li><a href="http://symas.com/mdb/doc/group__mdb__env.html#ga5791dd1adb09123f82dd1f331209e12e"><code>MDB_NOSYNC</code></a> - Regulates whether <code>LMDB</code> calls <code>fsync</code> after <code>commit</code> at the end of a transaction</li>
+  <li><a href="http://symas.com/mdb/doc/group__mdb__env.html#ga5021c4e96ffe9f383f5b8ab2af8e4b16"><code>MDB_NOMETASYNC</code></a> - Regulates whether <code>LMDB</code> calls <code>fsync</code> on the <code>metapage</code> after <code>commit</code> at the end of a transaction</li>
+</ul>
+
+<h2>How they play together</h2>
+
+<p>You may have notcied how the <code>FSYNC</code> settings talk much about "at end of transaction". Due to this,
+   this means if you've opted for <em>multiple</em> transactions, those <code>fsync</code> calls are going to wear you down.</p>
+
+<h1>The data</h1>
+
+<p>All of the following images click through to larger forms of themselves.</p>
+
+<h2 id="writeperf">Write Performance</h2>
+
+<p>Here we have 3 groups of Write Performance.</p>
+
+<a class="img" href="./write_reduced.png"><img src="./write_reduced.tn.png" /></a>
+
+<p>On the far right, we have the two slowest modes, both suffering under the penalty of having a transaction per entry:</p>
+
+<ul>
+  <li><strong>Slowest</strong> - One Transaction Per Cache Store, 
+    <code>fsync</code>ing <code>data</code> and <code>metadata</code></li>
+  <li><strong>Second Slowest</strong> - One Transaction Per Cache Store, 
+    <code>fsync</code>ing only <code>data</code></li>
+</ul>
+
+<p>Its too bad, but at 10x the time of <code>CHI::Driver::FastMmap</code>, it can certainly be better.</p>
+
+<a class="img" href="./write_reduced_slow.png"><img src="./write_reduced_slow.tn.png" /></a>
+
+<p>Next slowest group is again limited mostly by transaction overheads. But at only 1.75x <code>FastMmap</code>,
+   it serves as a respectable compromise between speed and ease of use. </p> 
+
+<a class="img" href="./write_reduced_medium.png"><img src="./write_reduced_medium.tn.png" /></a>
+
+<p>The fastest options are of course, by far, to use <em>single</em> transactions.</p>
+
+<p>All of the variations I tested of <code>fsync</code> settings in conjunction with <em>single</em> transactions
+   appeared to be as fast as each other. This is of course, due to <code>fsync</code> not really firiing
+   till <em>after</em> the end of the transaction</p>
+
+<p>Still, its impressive <code>LMDB</code> proves faster than <code>CHI</code>'s <code>FastMmap</code> driver.
+   Surprising, because I suspect <code>LMDB</code> to be implemented in terms of <code>Mmap</code> at some level,
+   so it really speaks for its efficiency, .... or suggest there's a performance defect that could be improved in <code>CHI::Driver::FastMmap</code></p>
+
+<a class="img" href="./write_reduced_fast.png"><img src="./write_reduced_fast.tn.png" /></a>
+
+<h2 id="readperf">Read Performance</h2>
+
+<p>There are only 2 main groups of performances for reads.</p>
+
+<a class="img" href="./read_reduced.png"><img src="./read_reduced.tn.png" /></a>
+
+<p>The most notably slower group is simply due to transaction overheads. 
+    Any <code>fsync</code>settings seem to have no impact on read rates.</p>
+
+<p>This is not too bad at ony 2x <code>FastMmap</code></p>
+
+<a class="img" href="./read_reduced_slow.png"><img src="./read_reduced_slow.tn.png" /></a>
+
+<p>And with only <em>single</em> transactions, read performance, regardless of <code>fsync</code> settings,
+   read performance is again, an impressive ~ 0.75x that of the <code>FastMmap</code> driver.</p>
+
+<a class="img" href="./read_reduced_fast.png"><img src="./read_reduced_fast.tn.png" /></a>
+
+<h1 id="source">The Benchmarks</h1>
+
+The code for generating these benchmark images is stored <a href="https://github.com/kentnl/CHI-Driver-LMDB/tree/benchmarks/bench">Here</a>.
+
+Raw CSV data generated locally is found in the <code>results/*</code> sub directories.
+
+  </div>
+  </body>
 </html>
-
