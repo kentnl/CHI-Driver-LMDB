@@ -161,7 +161,7 @@ This for me cuts down an operation that takes 30 seconds worth of writes down to
 
 For an in-depth comparison of the performance of various options,
 and how that compares to [`CHI::Driver::FastMmap`](https://metacpan.org/pod/CHI::Driver::FastMmap),
-see [http://kentnl.github.io/CHI-Driver-FastMmap](http://kentnl.github.io/CHI-Driver-FastMmap)
+see [http://kentnl.github.io/CHI-Driver-LMDB](http://kentnl.github.io/CHI-Driver-LMDB)
 
 # AUTHOR
 
