@@ -1,5 +1,11 @@
 Release history for CHI-Driver-LMDB
 
+0.002003 2014-09-18T22:55:49Z
+ [Performance Improvements]
+ - Cache database information using the 'dbi' integer interface.
+ - Mutli-Transaction writes up to 9% faster, up to 0.0005s faster per 10.
+ - Mutli-Transaction reads up to 10% faster, up to 0.0006s faster per 10.
+
 0.002002 2014-09-18T18:01:19Z
  [Documentation]
  - Get the URL Right. Ugh. Brain--

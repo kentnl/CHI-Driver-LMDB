@@ -3,7 +3,7 @@ NAME
     backend.
 
 VERSION
-    version 0.002002
+    version 0.002003
 
 SYNOPSIS
       use CHI;

@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB;
 
-our $VERSION = '0.002002';
+our $VERSION = '0.002003';
 
 # ABSTRACT: use OpenLDAPs LMDB Key-Value store as a cache backend.
 
@@ -68,6 +68,7 @@ sub _build_existing_root_dir {
 
 has '_lmdb_env'     => ( is => 'ro', builder => '_build_lmdb_env',     lazy => 1, );
 has '_lmdb_max_key' => ( is => 'ro', builder => '_build_lmdb_max_key', lazy => 1 );
+has '_lmdb_dbi'     => ( is => 'ro', builder => '_build_lmdb_dbi',     lazy => 1, );
 
 sub _build_lmdb_env {
   my ($self) = @_;
@@ -77,6 +78,14 @@ sub _build_lmdb_env {
 sub _build_lmdb_max_key {
   my ($self) = @_;
   return $self->_lmdb_env->get_maxkeysize;
+}
+
+sub _build_lmdb_dbi {
+  my ($self) = @_;
+  my $tx = $self->_lmdb_env->BeginTxn();
+  my $dbi = $tx->open( $self->namespace, $self->db_flags );
+  $tx->commit;
+  return $dbi;
 }
 
 sub BUILD {
@@ -99,9 +108,10 @@ sub DEMOLISH {
 sub _mk_txn {
   my ($self) = @_;
 
-  my $tx = $self->_lmdb_env->BeginTxn();
+  my $dbi = $self->_lmdb_dbi;
+  my $tx  = $self->_lmdb_env->BeginTxn();
   $tx->AutoCommit(1);
-  my $db = $tx->OpenDB( { dbname => $self->namespace, flags => $self->db_flags } );
+  my $db = LMDB_File->new( $tx, $dbi );
   return [ $tx, $db ];
 }
 
@@ -235,7 +245,7 @@ CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 =head1 VERSION
 
-version 0.002002
+version 0.002003
 
 =head1 SYNOPSIS
 
