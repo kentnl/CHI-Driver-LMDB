@@ -3,7 +3,7 @@ NAME
     backend.
 
 VERSION
-    version 0.002000
+    version 0.002001
 
 SYNOPSIS
       use CHI;
@@ -147,38 +147,10 @@ PERFORMANCE
     This for me cuts down an operation that takes 30 seconds worth of writes
     down to 6 ☺.
 
-Comparison vs FastMmap
-    FastMmap is still faster for reads. Here is a simple comparison for runs
-    of my "dep_changes.pl" utility which does a respectable amount of cache
-    look-ups.
-
-    Google Docs Image
-    <https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfN
-    iHGefyvc3gaI/pubchart?oid=25361389&format=interactive>
-
-    For writes, whether or not FastMmap is faster depends on settings.
-
-    *   "NOSYNC" + "single_txn = 1" tends to give faster performance than
-        "FastMmap".
-
-    *   "NOSYNC" + "single_txn = 0" gives comparable performance to
-        "FastMmap"
-
-    *   "SYNC" + "single_txn = 1" tends to give slightly worse performance
-        than "FastMmap"
-
-    Google Docs Image
-    <https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfN
-    iHGefyvc3gaI/pubchart?oid=390411539&format=interactive>
-
-    However,
-
-    *   "SYNC" + "single_txn = 0" gives much worse performance than all of
-        the above.
-
-    Google Docs Image
-    <https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfN
-    iHGefyvc3gaI/pubchart?oid=2027736788&format=interactive>
+In Depth
+    For an in-depth comparison of the performance of various options, and
+    how that compares to "CHI::Driver::FastMmap", see
+    <http://kentnl.github.io/CHI-Driver-FastMmap>
 
 AUTHOR
     Kent Fredric <kentnl@cpan.org>

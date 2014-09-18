@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB;
 
-our $VERSION = '0.002000';
+our $VERSION = '0.002001';
 
 # ABSTRACT: use OpenLDAPs LMDB Key-Value store as a cache backend.
 
@@ -235,7 +235,7 @@ CHI::Driver::LMDB - use OpenLDAPs LMDB Key-Value store as a cache backend.
 
 =head1 VERSION
 
-version 0.002000
+version 0.002001
 
 =head1 SYNOPSIS
 
@@ -388,51 +388,11 @@ compromise for a mere cache backend, where a missing record is a performance hit
 
 This for me cuts down an operation that takes 30 seconds worth of writes down to 6 ☺.
 
-=head1 Comparison vs FastMmap
+=head1 In Depth
 
-FastMmap is still faster for reads. Here is a simple comparison for runs
-of my C<dep_changes.pl> utility which does a respectable amount of cache look-ups.
-
-L<<
-Google Docs Image
-|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=interactive
->>
-
-=for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=25361389&format=image"></a></center>
-
-For writes, whether or not FastMmap is faster depends on settings.
-
-=over 4
-
-=item * C<NOSYNC> + C<single_txn = 1> tends to give faster performance than C<FastMmap>.
-
-=item * C<NOSYNC> + C<single_txn = 0> gives comparable performance to C<FastMmap>
-
-=item * C<SYNC>   + C<single_txn = 1> tends to give slightly worse performance than C<FastMmap>
-
-=back
-
-L<<
-Google Docs Image
-|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=interactive
->>
-
-=for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=390411539&format=image"></a></center>
-
-However,
-
-=over 4
-
-=item * C<SYNC> + C<single_txn = 0> gives much worse performance than all of the above.
-
-=back
-
-L<<
-Google Docs Image
-|https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive
->>
-
-=for html <center><a href="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=interactive"><img src="https://docs.google.com/spreadsheets/d/13PVt7N9aBnbXpqgQPPTFFO2plaLEXfNiHGefyvc3gaI/pubchart?oid=2027736788&format=image"></a></center>
+For an in-depth comparison of the performance of various options,
+and how that compares to L<< C<CHI::Driver::FastMmap>|CHI::Driver::FastMmap >>,
+see L<< http://kentnl.github.io/CHI-Driver-FastMmap >>
 
 =for Pod::Coverage BUILD DEMOLISH clear fetch fetch_multi_hashref get_keys get_namespaces max_key_length remove store store_multi
 
