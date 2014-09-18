@@ -19,8 +19,8 @@ my $selfdir = path($FindBin::Bin);
 $selfdir->child('results')->mkpath;
 $selfdir->child('results_reduced')->mkpath;
 
-my $outfile = $selfdir->child('results/lmdb_opentxn.csv');
-my $redfile = $selfdir->child('results_reduced/lmdb_opentxn.csv');
+my $outfile = $selfdir->child('results/lmdb_opentxn_renew.csv');
+my $redfile = $selfdir->child('results_reduced/lmdb_opentxn_renew.csv');
 
 my $bench = Benchmark::CSV->new(
   sample_size   => 10,
@@ -29,7 +29,7 @@ my $bench = Benchmark::CSV->new(
 );
 
 my $tdir = Path::Tiny->tempdir;
-
+my $dbi;
 my $env = LMDB::Env->new(
   "$tdir",
   {
@@ -37,64 +37,56 @@ my $env = LMDB::Env->new(
     maxdbs  => 1024,
   }
 );
+my $txn_reader;
+{
+  my $txn = $env->BeginTxn();
+  $dbi = $txn->open( 'test', MDB_CREATE );
+  my $db = LMDB_File->new( $txn, $dbi );
+  $txn->commit;
+}
 
 sub open_write_close {
   my $txn = $env->BeginTxn();
-  my $db  = $txn->OpenDB(
-    {
-      dbname => 'test',
-      flags  => MDB_CREATE,
-    }
-  );
+  my $db = LMDB_File->new( $txn, $dbi );
   $db->put( 'a' => 'b' );
   $txn->commit;
 }
 
 sub open_read_close {
-  my $txn = $env->BeginTxn();
-  my $db  = $txn->OpenDB(
-    {
-      dbname => 'test',
-      flags  => MDB_CREATE,
-    }
-  );
+
+  #if ( not $txn_reader ) {
+  $txn_reader = $env->BeginTxn(MDB_RDONLY);
+
+  #}
+  my $db = LMDB_File->new( $txn_reader, $dbi );
   my $get = $db->get('a');
-  $txn->commit;
+  $txn_reader->commit;
 }
 
 sub open_read_twice_close {
-  my $txn = $env->BeginTxn();
-  my $db  = $txn->OpenDB(
-    {
-      dbname => 'test',
-      flags  => MDB_CREATE,
-    }
-  );
+
+  #if ( not $txn_reader ) {
+  $txn_reader = $env->BeginTxn(MDB_RDONLY);
+
+  #}
+  my $db   = LMDB_File->new( $txn_reader, $dbi );
   my $get  = $db->get('a');
   my $getb = $db->get('a');
-
-  $txn->commit;
+  $txn_reader->commit;
 }
 
 sub open_close_txn {
   my $txn = $env->BeginTxn();
-  my $db  = $txn->OpenDB(
-    {
-      dbname => 'test',
-      flags  => MDB_CREATE,
-    }
-  );
+  my $db = LMDB_File->new( $txn, $dbi );
   $txn->commit;
 }
-open_close_txn;
 open_write_close;
+open_close_txn;
 open_read_close;
 open_read_twice_close;
-$bench->add_instance( 'open+close transaction' => \&open_close_txn );
-
+$bench->add_instance( 'open+close transaction'        => \&open_close_txn );
 $bench->add_instance( 'open+read+close transaction'   => \&open_read_close );
 $bench->add_instance( 'open+readx2+close transaction' => \&open_read_twice_close );
-
 *STDOUT->autoflush(1);
 printf qq{Running: [%s]\rWriting: [}, q[_] x 200;
 
