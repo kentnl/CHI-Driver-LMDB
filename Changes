@@ -1,5 +1,7 @@
 Release history for CHI-Driver-LMDB
 
+0.002004 2014-09-18T23:39:43Z
+
 0.002003 2014-09-18T22:55:49Z
  [Performance Improvements]
  - Cache database information using the 'dbi' integer interface.
