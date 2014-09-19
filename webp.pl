@@ -12,6 +12,7 @@ use FindBin;
 
 for my $child ( grep { $_->basename =~ /.png$/ } path($FindBin::Bin)->children )
 {
+    next if $child->basename =~ /\.tn\./;
     my $target =
       path($FindBin::Bin)->child( $child->basename('.png') . '.webp' );
     my $tn =
