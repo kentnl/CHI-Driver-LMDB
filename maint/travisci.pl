@@ -12,5 +12,18 @@ sub {
   # Nuke 5.22 + Sterile for now
   @{ $yaml->{matrix}->{include} } =
     grep { $_->{perl} ne '5.22' or $_->{env} !~ /STERILIZE_ENV=1/ } @{ $yaml->{matrix}->{include} };
+
+  # Nuke 5.20 + Sterile due to 5.20.3 > not a known sterile
+  @{ $yaml->{matrix}->{include} } =
+    grep { $_->{perl} ne '5.20' or $_->{env} !~ /STERILIZE_ENV=1/ } @{ $yaml->{matrix}->{include} };
+
+  # Nuke 5.10 + Sterile due -llmdb not working
+  @{ $yaml->{matrix}->{include} } =
+    grep { $_->{perl} ne '5.10' or $_->{env} !~ /STERILIZE_ENV=1/ } @{ $yaml->{matrix}->{include} };
+
+  # Nuke 5.8 + Sterile due to 5.8.8 > not a known sterile
+  @{ $yaml->{matrix}->{include} } =
+    grep { $_->{perl} ne '5.8' or $_->{env} !~ /STERILIZE_ENV=1/ } @{ $yaml->{matrix}->{include} };
+
 };
 

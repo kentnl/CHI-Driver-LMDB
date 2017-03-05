@@ -1,6 +1,6 @@
 Release history for CHI-Driver-LMDB
 
-0.002004 2017-03-05T12:37:52Z 951984e
+0.002004 2017-03-05T12:47:32Z fc22b4f
  [Bugfix]
  - Avoid test failures on 5.26 w/ -Ddefault_inc_excludes_dot
  - Closes https://github.com/kentnl/CHI-Driver-LMDB/issues/1
