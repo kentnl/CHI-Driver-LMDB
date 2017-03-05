@@ -5,7 +5,7 @@ use utf8;
 
 package CHI::Driver::LMDB::t::CHIDriverTests;
 
-our $VERSION = '0.002003';
+our $VERSION = '0.002004';
 
 # ABSTRACT: Test suite for LMDB driver
 
@@ -56,7 +56,7 @@ CHI::Driver::LMDB::t::CHIDriverTests - Test suite for LMDB driver
 
 =head1 VERSION
 
-version 0.002003
+version 0.002004
 
 =for Pod::Coverage new_cache_options supports_get_namespaces testing_driver_class
 
@@ -66,7 +66,7 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Kent Fredric <kentfredric@gmail.com>.
+This software is copyright (c) 2017 by Kent Fredric <kentfredric@gmail.com>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

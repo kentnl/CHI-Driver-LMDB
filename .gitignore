@@ -1,2 +1,3 @@
-.build
-CHI-Driver-LMDB-*
+/.build
+/CHI-Driver-LMDB-*
+/tmp/
