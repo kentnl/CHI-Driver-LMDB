@@ -26,10 +26,10 @@ name: CHI-Driver-LMDB
 provides:
   CHI::Driver::LMDB:
     file: lib/CHI/Driver/LMDB.pm
-    version: '0.002004'
+    version: '0.002005'
   CHI::Driver::LMDB::t::CHIDriverTests:
     file: lib/CHI/Driver/LMDB/t/CHIDriverTests.pm
-    version: '0.002004'
+    version: '0.002005'
 recommends:
   Moo: '1.000008'
   Path::Tiny: '0.058'
@@ -49,4 +49,4 @@ resources:
   bugtracker: https://github.com/kentnl/CHI-Driver-LMDB/issues
   homepage: https://github.com/kentnl/CHI-Driver-LMDB
   repository: https://github.com/kentnl/CHI-Driver-LMDB.git
-version: '0.002004'
+version: '0.002005'
