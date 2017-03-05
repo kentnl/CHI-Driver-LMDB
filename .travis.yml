@@ -2,6 +2,7 @@
 after_failure:
   - perl ./maint-travis-ci/report_fail_ctx.pl
 before_install:
+  - sudo apt-get install liblmdb-dev
   - perlbrew list
   - time git clone --depth 10 https://github.com/kentfredric/travis-scripts.git maint-travis-ci
   - time git -C ./maint-travis-ci reset --hard master
@@ -14,6 +15,7 @@ branches:
     - master
     - builds
     - releases
+dist: trusty
 install:
   - time perl ./maint-travis-ci/install_deps_early.pl
   - time perl ./maint-travis-ci/autoinstall_dzil.pl
@@ -26,9 +28,7 @@ matrix:
     - env: STERILIZE_ENV=0 DEVELOPER_DEPS=1
   include:
     - env: STERILIZE_ENV=0 COVERAGE_TESTING=1
-      perl: '5.21'
-    - env: STERILIZE_ENV=1
-      perl: '5.21'
+      perl: '5.22'
     - env: STERILIZE_ENV=0
       perl: '5.8'
     - env: STERILIZE_ENV=0
@@ -42,7 +42,7 @@ matrix:
     - env: STERILIZE_ENV=0
       perl: '5.20'
     - env: STERILIZE_ENV=0
-      perl: '5.21'
+      perl: '5.22'
     - env: STERILIZE_ENV=1
       perl: '5.8'
     - env: STERILIZE_ENV=1
@@ -50,9 +50,9 @@ matrix:
     - env: STERILIZE_ENV=1
       perl: '5.20'
     - env: STERILIZE_ENV=0 DEVELOPER_DEPS=1
-      perl: '5.21'
+      perl: '5.22'
     - env: STERILIZE_ENV=0 RELEASE_TESTING=1 AUTHOR_TESTING=1
-      perl: '5.21'
+      perl: '5.22'
 script:
   - time perl ./maint-travis-ci/script.pl
-sudo: false
+sudo: required
